@@ -1,11 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import VideoPlayer from './components/VideoPlayer';
 
 type AppProps = {};
 
 const App = (props: AppProps): JSX.Element => (
   <div className="App">
+    <VideoPlayer />
     <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
       <p>
@@ -29,7 +31,7 @@ const App = (props: AppProps): JSX.Element => (
 
         </Route>
         <Route path="/list">
-          
+
         </Route>
       </Switch>
     </BrowserRouter>
