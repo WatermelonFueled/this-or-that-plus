@@ -1,40 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import VideoPlayer from './components/VideoPlayer';
+import EpisodePage from './pages/EpisodePage';
 
 type AppProps = {};
 
 const App = (props: AppProps): JSX.Element => (
-  <div className="App">
-    <VideoPlayer />
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.js</code> and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-    </header>
-    <BrowserRouter>
-      <Switch>
-        <Route path="/:title">
+  <div className="w-full min-h-screen">
+    <main className="w-full max-w-7xl mx-auto">
+      <BrowserRouter>
+        <Switch>
+          <Route path="/stats">
 
-        </Route>
-        <Route path="/stats">
-
-        </Route>
-        <Route path="/list">
-
-        </Route>
-      </Switch>
-    </BrowserRouter>
+          </Route>
+          <Route path="/list">
+            <p>a</p>
+          </Route>
+          <Route path="/:episode">
+            <EpisodePage />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </main>
   </div>
 );
 

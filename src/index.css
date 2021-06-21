@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .pb-9-16 {
+    padding-bottom: 56.25%
+  }
+}
