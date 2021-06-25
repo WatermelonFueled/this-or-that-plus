@@ -47,14 +47,16 @@ const App = (): JSX.Element => {
           >
             <div className="max-w-full self-center justify-self-center">
               <button
-                className="block ml-auto mb-8"
+                className="block ml-auto"
                 type="button"
                 onClick={() => setShowMenu(false)}
               >
                 <XIcon className="menu-icon" />
               </button>
               <AuthCheck fallback={<Login />}>
-                <nav className="">
+                <nav
+                  className="flex flex-col mx-8 my-4 w-64 min-w-min text-center divide-y divide-gray-500 divide-opacity-50"
+                >
                   <NavLink
                     to="/episodes"
                     className="navlink"
@@ -75,7 +77,7 @@ const App = (): JSX.Element => {
             </div>
           </div>
           <button
-            className="fixed right-6 bottom-6"
+            className={`fixed right-6 bottom-6 ${showMenu ? 'opacity-0' : ''}`}
             type="button"
             onClick={() => setShowMenu(true)}
           >
