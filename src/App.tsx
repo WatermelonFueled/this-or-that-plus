@@ -81,7 +81,7 @@ const App = (): JSX.Element => {
             type="button"
             onClick={() => setShowMenu(true)}
           >
-            <MenuIcon className="menu-icon bg-purple-300 bg-opacity-50 hover:bg-opacity-100" />
+            <MenuIcon className="menu-icon bg-purple-300 bg-opacity-50 hover:bg-opacity-70" />
           </button>
         </div>
       </BrowserRouter>
