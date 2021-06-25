@@ -1,8 +1,9 @@
 import { useEffect, useReducer, useState } from "react"
 import { useParams } from "react-router-dom"
-import VideoPlayer from "../components/VideoPlayer"
+
 import { episodeType, RESPONSE } from "../schema"
 import { findLastIndex } from "../util"
+import VideoPlayer from "../components/VideoPlayer"
 import ResponseButton from "../components/ResponseButton"
 
 const exampleData = {
