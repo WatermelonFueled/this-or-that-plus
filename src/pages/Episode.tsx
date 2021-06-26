@@ -74,7 +74,7 @@ const responseReducer = (
   }
 }
 
-const EpisodePage = (props: propTypes): JSX.Element => {
+const Episode = (props: propTypes): JSX.Element => {
   const { episode } = useParams<routeParams>()
   const [data, setData] = useState<episodeType | null>()
   const [index, setIndex] = useState(-1)
@@ -131,5 +131,5 @@ const EpisodePage = (props: propTypes): JSX.Element => {
   )
 }
 
-export default EpisodePage
+export default Episode
 
