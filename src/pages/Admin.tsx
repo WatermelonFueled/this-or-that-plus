@@ -1,8 +1,10 @@
-import { useUser } from "reactfire"
+import {
+  useUser,
+  useFirestore
+} from "reactfire"
 import { Redirect } from 'react-router-dom'
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import { PlusIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/outline';
-
 
 const ADMIN_UID = 'IU7cEMs76pScUPdwq7N6lY1dYOp1'
 
@@ -40,27 +42,31 @@ type Inputs = {
   }[],
 }
 
-const defaultOption = { text: '' }
-const defaultQuestion = {
-  time: 0,
-  prompt: '',
-  options: [{ ...defaultOption }, { ...defaultOption }]
-}
 const defaultValues = {
   videoId: '',
-  questions: [{ ...defaultQuestion }]
+  questions: [{
+    time: 0,
+    prompt: '',
+    options: [{ text: '' }, { text: '' }]
+  }]
 }
 
 
 const NewEpisodeForm = ():JSX.Element => {
   const { register, handleSubmit, control } = useForm<Inputs>({ defaultValues })
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-  }
   const { fields, append, remove, swap } = useFieldArray({
     control,
     name: "questions"
   });
+
+  const episodesRef = useFirestore().collection('episodes')
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    episodesRef.add(data).then((result) => {
+      console.log(result)
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -142,7 +148,7 @@ const NewEpisodeForm = ():JSX.Element => {
         <div className="py-3">
           <button
             type="button"
-            onClick={() => append(defaultQuestion)}
+            onClick={() => append(defaultValues.questions[0])}
           >
             <PlusIcon className="menu-icon" />
           </button>
@@ -162,7 +168,7 @@ const NewEpisodeForm = ():JSX.Element => {
 const NewEpisodeOptions = ({ index, control, register }):JSX.Element => {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "options"
+    name: `questions.${index}.options`
   });
 
   return (
@@ -187,7 +193,7 @@ const NewEpisodeOptions = ({ index, control, register }):JSX.Element => {
       ))}
       <button
         type="button"
-        onClick={() => append(defaultOption)}
+        onClick={() => append(defaultValues.questions[0].options[0])}
       >
         <PlusIcon className="menu-icon" />
       </button>

@@ -5,8 +5,6 @@ import 'firebase/auth'
 import {
   AuthCheck,
   FirebaseAppProvider,
-  // useFirestoreDocData,
-  // useFirestore
 } from 'reactfire'
 import { XIcon, MenuIcon } from '@heroicons/react/outline'
 
