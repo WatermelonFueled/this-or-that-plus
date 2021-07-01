@@ -8,6 +8,8 @@ import ResponseButton from "../components/ResponseButton"
 
 const exampleData = {
   videoId: '2EU4ZpIq87s',
+  title: 'Test title hello',
+  date: new Date(1999, 10, 11, 12, 13),
   questions: [
     {
       time: 11,
@@ -98,6 +100,7 @@ const Episode = (props: propTypes): JSX.Element => {
     >
       <VideoPlayer
         videoId={data?.videoId}
+        playAutomatically
         onTimeCheck={(current) => setIndex(
           data
           ? findLastIndex(data.questions, ({ time }) => current > time)

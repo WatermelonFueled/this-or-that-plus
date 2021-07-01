@@ -33,6 +33,8 @@ export default Admin
 
 type Inputs = {
   videoId: string,
+  title: string,
+  date: Date,
   questions: {
     time: number,
     prompt: string,
@@ -53,7 +55,7 @@ const defaultValues = {
 
 
 const NewEpisodeForm = ():JSX.Element => {
-  const { register, handleSubmit, control } = useForm<Inputs>({ defaultValues })
+  const { register, handleSubmit, control, reset } = useForm<Inputs>({ defaultValues })
   const { fields, append, remove, swap } = useFieldArray({
     control,
     name: "questions"
@@ -62,9 +64,8 @@ const NewEpisodeForm = ():JSX.Element => {
   const episodesRef = useFirestore().collection('episodes')
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     episodesRef.add(data).then((result) => {
-      console.log(result)
+      reset()
     })
   }
 
@@ -77,6 +78,24 @@ const NewEpisodeForm = ():JSX.Element => {
         <input
           {...register("videoId", { required: true })}
           type="text"
+        />
+      </label>
+      <label>
+        <div>
+          Title
+        </div>
+        <input
+          {...register("title", { required: true })}
+          type="text"
+        />
+      </label>
+      <label>
+        <div>
+          Date
+        </div>
+        <input
+          {...register("date", { required: true, valueAsDate: true })}
+          type="date"
         />
       </label>
       <ol className="divide-y divide-purple-700">

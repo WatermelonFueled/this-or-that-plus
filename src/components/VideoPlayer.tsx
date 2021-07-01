@@ -12,6 +12,7 @@ const YT_PLAY_STATES = {
 
 interface propTypes {
   videoId: string | undefined;
+  playAutomatically: boolean | null;
   onTimeCheck: (current: number) => void;
 }
 
@@ -44,10 +45,12 @@ const VideoPlayer = (props: propTypes): JSX.Element => {
     if (props.videoId) {
       // @ts-ignore
       player.current.loadVideoById(props.videoId)
-      // @ts-ignore
-      player.current.playVideo()
+      if (props.playAutomatically) {
+        // @ts-ignore
+        player.current.playVideo()
+      }
     }
-  }, [props.videoId])
+  }, [props.videoId, props.playAutomatically])
 
   useEffect(() => {
     let interval: number | NodeJS.Timeout | null = null

@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     extend: {
       spacing: {
+        '18': '4.5rem',
         '180': '45rem',
       },
       maxWidth: {
@@ -16,6 +17,7 @@ module.exports = {
   variants: {
     extend: {
       animation: ['hover', 'focus'],
+      ringWidth: ['hover', 'focus'],
     },
   },
   plugins: [
