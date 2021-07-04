@@ -13,21 +13,12 @@ import {
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { XIcon, MenuIcon } from '@heroicons/react/outline'
 
+import CONFIG from './config.json'
+
 import Admin from './pages/Admin'
 import Episode from './pages/Episode'
 import Nav from './Nav'
 import Episodes from './pages/Episodes'
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyBrsa7k3ajtgKbUqS34kWf0y69ZEXSy0-Q',
-  authDomain: 'thisorthat-lol.firebaseapp.com',
-  databaseURL: 'https://thisorthat-lol.firebaseio.com',
-  projectId: 'thisorthat-lol',
-  storageBucket: 'thisorthat-lol.appspot.com',
-  messagingSenderId: '434578118432',
-  appId: '1:434578118432:web:cc3e3281cfd742cf94e945',
-  measurementId: 'G-BT0MKTC0XM'
-}
 
 const queryClient = new QueryClient()
 
@@ -36,11 +27,11 @@ const App = (): JSX.Element => {
 
   return (
     <FirebaseAppProvider
-      firebaseConfig={firebaseConfig}
+      firebaseConfig={CONFIG.firebaseConfig}
     >
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <div className="relative w-full min-h-screen">
+          <div className="relative w-full min-h-screen dark:bg-gray-900 dark:text-gray-100">
             <main className="w-full max-w-7xl mx-auto">
               <Switch>
                 <Route path="/admin">

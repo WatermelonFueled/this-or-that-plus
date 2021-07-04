@@ -15,4 +15,10 @@
   .navlink {
     @apply text-2xl p-3 text-gray-900 transition hover:text-purple-700 focus:text-purple-700;
   }
+  .ratio-9-16-cont {
+    @apply relative w-full h-0 pb-9-16;
+  }
+  .ratio-9-16-item {
+    @apply absolute inset-0 w-full h-full;
+  }
 }
