@@ -1,5 +1,5 @@
 import { useQuery } from "react-query"
-import CONFIG from '../config.json'
+import { getYoutubeData } from "../api"
 
 const YouTubeThumb = (
   { videoId, title, ...rest }: { videoId: string; title?: string; }
@@ -25,23 +25,3 @@ const YouTubeThumb = (
 }
 
 export default YouTubeThumb
-
-type dataType = {
-  items: {
-    snippet: {
-      thumbnails: {
-        high: {
-          url: string;
-        };
-      };
-    };
-  }[];
-}
-
-const getYoutubeData = async (videoId: string): Promise<dataType> => {
-  const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${CONFIG.youtubeDataAPIKey}&part=snippet&fields=items(snippet/thumbnails/high)`)
-  if (!response.ok) {
-    throw new Error('Error while retrieving data');
-  }
-  return response.json()
-}

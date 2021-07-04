@@ -5,6 +5,10 @@ import {
 import { Redirect } from 'react-router-dom'
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import { PlusIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import { useQuery } from "react-query";
+import { useEffect } from "react";
+import queryString from 'query-string';
+import { getYoutubeData } from "../api";
 
 const ADMIN_UID = 'IU7cEMs76pScUPdwq7N6lY1dYOp1'
 
@@ -32,20 +36,22 @@ export default Admin
 /* --------------------------------------------------- */
 
 type Inputs = {
-  videoId: string,
-  title: string,
-  date: Date,
+  url?: string;
+  videoId: string;
+  title: string;
+  date: Date;
   questions: {
-    time: number,
-    prompt: string,
+    time: number;
+    prompt: string;
     options: {
-      text: string,
-    }[],
-  }[],
+      text: string;
+    }[];
+  }[];
 }
 
 const defaultValues = {
-  videoId: '',
+  url: '',
+  title: '',
   questions: [{
     time: 0,
     prompt: '',
@@ -55,28 +61,71 @@ const defaultValues = {
 
 
 const NewEpisodeForm = ():JSX.Element => {
-  const { register, handleSubmit, control, reset } = useForm<Inputs>({ defaultValues })
+  const { register, watch, setValue, handleSubmit, control, reset } = useForm<Inputs>({ defaultValues })
+
   const { fields, append, remove, swap } = useFieldArray({
     control,
     name: "questions"
   });
 
+  const watchUrl = watch('url', '')
+
+  useEffect(() => {
+    if (watchUrl) {
+      const parsedUrl = queryString.parseUrl(watchUrl)
+      const videoId = parsedUrl?.query?.v
+      if (videoId) {
+        if (typeof videoId === 'string') {
+          setValue('videoId', videoId)
+        } else {
+          setValue('videoId', videoId[0])
+        }
+      }
+    }
+  }, [watchUrl, setValue])
+
+  const watchVideoId = watch('videoId', '')
+
+  const youtubeData = useQuery(
+    ['youtubeData', watchVideoId],
+    () => getYoutubeData(watchVideoId,'snippet(title,publishedAt,thumbnails/high)'),
+    { enabled: false }
+  )
+
+  useEffect(() => {
+    if (watchVideoId && !youtubeData.isLoading) {
+      youtubeData.refetch()
+    }
+  }, [watchVideoId])
+
+  useEffect(() => {
+    if (youtubeData.isSuccess && youtubeData.data) {
+      const { title, publishedAt } = youtubeData.data?.items?.[0]?.snippet ?? { title: null, publishedAt: null }
+      console.debug(title)
+      console.debug(publishedAt)
+      if (title) setValue('title', title)
+      if (publishedAt) setValue('date', publishedAt)
+    }
+  }, [youtubeData.isSuccess, youtubeData.data])
+
   const episodesRef = useFirestore().collection('episodes')
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    episodesRef.add(data).then((result) => {
-      reset()
-    })
+    delete data.url
+    console.debug(data)
+    // episodesRef.add(data).then((result) => {
+    //   reset()
+    // })
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>
         <div>
-          Video ID
+          URL
         </div>
         <input
-          {...register("videoId", { required: true })}
+          {...register("url", { required: true })}
           type="text"
         />
       </label>
@@ -87,15 +136,6 @@ const NewEpisodeForm = ():JSX.Element => {
         <input
           {...register("title", { required: true })}
           type="text"
-        />
-      </label>
-      <label>
-        <div>
-          Date
-        </div>
-        <input
-          {...register("date", { required: true, valueAsDate: true })}
-          type="date"
         />
       </label>
       <ol className="divide-y divide-purple-700">
@@ -219,3 +259,4 @@ const NewEpisodeOptions = ({ index, control, register }):JSX.Element => {
     </div>
   )
 }
+
