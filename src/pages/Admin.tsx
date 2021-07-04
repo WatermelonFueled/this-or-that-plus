@@ -9,6 +9,7 @@ import { useQuery } from "react-query";
 import { useEffect } from "react";
 import queryString from 'query-string';
 import { getYoutubeData } from "../api";
+import { extractTitle } from "../util";
 
 const ADMIN_UID = 'IU7cEMs76pScUPdwq7N6lY1dYOp1'
 
@@ -100,11 +101,13 @@ const NewEpisodeForm = ():JSX.Element => {
 
   useEffect(() => {
     if (youtubeData.isSuccess && youtubeData.data) {
-      const { title, publishedAt } = youtubeData.data?.items?.[0]?.snippet ?? { title: null, publishedAt: null }
-      console.debug(title)
-      console.debug(publishedAt)
-      if (title) setValue('title', title)
-      if (publishedAt) setValue('date', publishedAt)
+      const snippet = youtubeData.data?.items?.[0]?.snippet
+      if (snippet) {
+        if (snippet.title) {
+          setValue('title', extractTitle(snippet.title))
+        }
+        if (snippet.publishedAt) setValue('date', snippet.publishedAt)
+      }
     }
   }, [youtubeData.isSuccess, youtubeData.data])
 
@@ -112,10 +115,9 @@ const NewEpisodeForm = ():JSX.Element => {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     delete data.url
-    console.debug(data)
-    // episodesRef.add(data).then((result) => {
-    //   reset()
-    // })
+    episodesRef.add(data).then((result) => {
+      reset()
+    })
   }
 
   return (
@@ -127,6 +129,7 @@ const NewEpisodeForm = ():JSX.Element => {
         <input
           {...register("url", { required: true })}
           type="text"
+          className="input"
         />
       </label>
       <label>
@@ -136,6 +139,7 @@ const NewEpisodeForm = ():JSX.Element => {
         <input
           {...register("title", { required: true })}
           type="text"
+          className="input"
         />
       </label>
       <ol className="divide-y divide-purple-700">
@@ -183,6 +187,7 @@ const NewEpisodeForm = ():JSX.Element => {
                       valueAsNumber: true,
                     })}
                     type="text"
+                    className="input"
                   />
                 </label>
                 <label>
@@ -194,6 +199,7 @@ const NewEpisodeForm = ():JSX.Element => {
                       required: true,
                     })}
                     type="text"
+                    className="input"
                   />
                 </label>
               </div>
@@ -239,7 +245,7 @@ const NewEpisodeOptions = ({ index, control, register }):JSX.Element => {
               required: true,
             })}
             type="text"
-            className="pr-8"
+            className="input pr-8"
           />
           <button
             type="button"
