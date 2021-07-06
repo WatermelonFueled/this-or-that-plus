@@ -5,7 +5,7 @@ const YouTubeThumb = (
   { videoId, title, ...rest }: { videoId: string; title?: string; }
 ): JSX.Element | null => {
   const { isError, isLoading, data } = useQuery(
-    ['thumbnails', { videoId }],
+    ['youtubeData', { videoId }],
     () => getYoutubeData(videoId),
     { staleTime: Infinity }
   )

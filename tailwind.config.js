@@ -18,7 +18,7 @@ module.exports = {
   variants: {
     extend: {
       animation: ['hover', 'focus'],
-      ringWidth: ['hover', 'focus'],
+      ringWidth: ['hover', 'focus', 'group-focus'],
     },
   },
   plugins: [

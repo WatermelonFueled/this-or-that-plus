@@ -3,6 +3,7 @@ export interface optionType {
 }
 
 export interface questionType {
+  episodeId: string;
   time: number; // seconds
   prompt: string;
   options: optionType[];
@@ -14,7 +15,7 @@ export interface episodeType {
   title: string;
   date: Date;
   thumbnail?: string;
-  questions: questionType[];
+  questions: string[]; // question Ids
 }
 
 
@@ -24,4 +25,13 @@ export enum RESPONSE {
   THAT = 1,
   OTHER = 2,
   OTHEROTHER = 3,
+}
+
+
+export interface responseType {
+  episode: string;
+  question: string;
+  uid: string;
+  option: RESPONSE;
+  date: Date;
 }

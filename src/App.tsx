@@ -11,14 +11,14 @@ import {
   QueryClientProvider,
 } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
-import { XIcon, MenuIcon } from '@heroicons/react/outline'
 
 import CONFIG from './config.json'
 
 import Admin from './pages/Admin'
 import Episode from './pages/Episode'
-import Nav from './Nav'
+
 import Episodes from './pages/Episodes'
+import Menu from './Menu/Menu'
 
 const queryClient = new QueryClient()
 
@@ -42,32 +42,15 @@ const App = (): JSX.Element => {
                 <Route path="/episodes">
                   <Episodes />
                 </Route>
-                <Route path="/:episode">
+                <Route path="/:episodeName">
                   <Episode />
                 </Route>
               </Switch>
             </main>
-            <div
-              className={`absolute w-screen h-screen inset-0 bg-purple-200 bg-opacity-90 ${showMenu ? 'grid' : 'hidden'}`}
-            >
-              <div className="max-w-full self-center justify-self-center">
-                <button
-                  className="block ml-auto"
-                  type="button"
-                  onClick={() => setShowMenu(false)}
-                >
-                  <XIcon className="menu-icon" />
-                </button>
-                <Nav />
-              </div>
-            </div>
-            <button
-              className={`fixed right-6 bottom-6 ${showMenu ? 'opacity-0' : ''}`}
-              type="button"
-              onClick={() => setShowMenu(true)}
-            >
-              <MenuIcon className="menu-icon bg-purple-300 bg-opacity-50 hover:bg-opacity-70" />
-            </button>
+            <Menu
+              showMenu={showMenu}
+              setShowMenu={setShowMenu}
+            />
           </div>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />

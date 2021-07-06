@@ -23,8 +23,14 @@ const Admin = ():JSX.Element => {
 
   return isAdmin ? (
     <div
-      className=""
+      className="p-4 flex flex-col gap-8 sm:gap-10 lg:gap-12"
     >
+      <h1 className="heading">
+        Admin
+      </h1>
+      <h1 className="heading">
+        New Episode
+      </h1>
       <NewEpisodeForm />
     </div>
   ) : (
@@ -88,7 +94,7 @@ const NewEpisodeForm = ():JSX.Element => {
   const watchVideoId = watch('videoId', '')
 
   const youtubeData = useQuery(
-    ['youtubeData', watchVideoId],
+    ['youtubeData', { videoId: watchVideoId }],
     () => getYoutubeData(watchVideoId,'snippet(title,publishedAt,thumbnails/high)'),
     { enabled: false }
   )
@@ -106,16 +112,31 @@ const NewEpisodeForm = ():JSX.Element => {
         if (snippet.title) {
           setValue('title', extractTitle(snippet.title))
         }
-        if (snippet.publishedAt) setValue('date', snippet.publishedAt)
+        if (snippet.publishedAt) setValue('date', new Date(snippet.publishedAt))
       }
     }
   }, [youtubeData.isSuccess, youtubeData.data])
 
-  const episodesRef = useFirestore().collection('episodes')
+  const firestore = useFirestore()
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     delete data.url
-    episodesRef.add(data).then((result) => {
+
+    const { questions, ...episodeData } = data
+
+    const batch = firestore.batch()
+
+    const episodeRef = firestore.collection('episodes').doc()
+
+    const questionIds = questions.map((questionData) => {
+      const questionRef = firestore.collection('questions').doc()
+      batch.set(questionRef, { episodeId: episodeRef.id, ...questionData })
+      return questionRef.id
+    })
+
+    batch.set(episodeRef, { questions: questionIds, ...episodeData })
+
+    batch.commit().then((result) => {
       reset()
     })
   }
@@ -252,7 +273,7 @@ const NewEpisodeOptions = ({ index, control, register }):JSX.Element => {
             onClick={() => remove(optionIndex)}
             className="block absolute right-1 inset-y-0 my-auto"
           >
-            <TrashIcon className="w-7 h-7 p-1 stroke-current text-gray-500 transition hover:text-red-500" />
+            <TrashIcon className="w-7 h-7 p-1 stroke-current text-gray-400 transition hover:text-red-500" />
           </button>
         </div>
       ))}

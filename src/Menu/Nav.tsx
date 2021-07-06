@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { AuthCheck } from 'reactfire'
 
 import { Login, Logout } from './Auth'
-import { useIsAdmin } from './pages/Admin'
+import { useIsAdmin } from '../pages/Admin'
 
 const Nav = ():JSX.Element => {
 
@@ -16,7 +16,7 @@ const Nav = ():JSX.Element => {
           className="navlink"
           activeClassName="tracking-widest"
         >
-          episodes
+          Episodes
         </NavLink>
         <AuthCheck fallback={null}>
           {<AdminNavLink />}
