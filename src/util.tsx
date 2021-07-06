@@ -16,3 +16,8 @@ export function findLastIndex<T>(array: Array<T>, predicate: (value: T, index: n
   }
   return -1;
 }
+
+const titleRegex = /^This or That(: | - | \| )/
+export function extractTitle(rawTitle: string): string {
+  return rawTitle.replace(titleRegex, '')
+}

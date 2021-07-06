@@ -1,16 +1,21 @@
-export type optionType = {
+export interface optionType {
   text: string;
 }
 
-export type questionType = {
+export interface questionType {
+  episodeId: string;
   time: number; // seconds
   prompt: string;
   options: optionType[];
 }
 
-export type episodeType = {
+export interface episodeType {
+  id?: string;
   videoId: string;
-  questions: questionType[];
+  title: string;
+  date: Date;
+  thumbnail?: string;
+  questions: string[]; // question Ids
 }
 
 
@@ -20,6 +25,13 @@ export enum RESPONSE {
   THAT = 1,
   OTHER = 2,
   OTHEROTHER = 3,
-  OTHEROTHEROTHER = 4
 }
 
+
+export interface responseType {
+  episode: string;
+  question: string;
+  uid: string;
+  option: RESPONSE;
+  date: Date;
+}

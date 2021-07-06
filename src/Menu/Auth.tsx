@@ -9,8 +9,10 @@ export const Login = ():JSX.Element => {
     signInFlow: 'popup',
     signInOptions: [auth.GoogleAuthProvider.PROVIDER_ID],
     callbacks: {
-      // Avoid redirects after sign-in.
-      signInSuccessWithAuthResult: () => false
+      signInSuccessWithAuthResult: () => {
+        return false // Avoid redirects after sign-in.
+      },
+
     }
   };
 
@@ -27,23 +29,23 @@ export const Logout = ():JSX.Element => {
 
   return showConfirm ? (
     <div>
-      <p className="p-1 text-gray-700 italic text-center text-md">
+      <p className="p-1 italic text-center text-md text-gray-700 dark:text-gray-300">
         Are you sure?
       </p>
       <div
-        className="flex flex-row flex-nowrap justify-center gap-1 text-xl"
+        className="flex flex-row flex-nowrap justify-center gap-4 text-xl"
       >
         <button
           onClick={() => auth.signOut()}
           type="button"
-          className="p-1 text-purple-700 transition transform hover:-translate-y-1 focus:-translate-y-1"
+          className="p-1 text-purple-700 dark:text-purple-300 transition transform hover:-translate-y-1 focus:-translate-y-1"
         >
           Yes, Logout
         </button>
         <button
           onClick={() => setShowConfirm(false)}
           type="button"
-          className="p-1 text-gray-900 transition transform hover:-translate-y-1 focus:-translate-y-1"
+          className="p-1 text-gray-900 dark:text-gray-300 transition transform hover:-translate-y-1 focus:-translate-y-1"
         >
           Nevermind
         </button>

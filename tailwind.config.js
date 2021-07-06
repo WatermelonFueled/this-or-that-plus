@@ -1,9 +1,11 @@
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media', // false or 'media' or 'class'
   theme: {
     extend: {
       spacing: {
+        '18': '4.5rem',
+        '128': '32rem',
         '180': '45rem',
       },
       maxWidth: {
@@ -16,7 +18,10 @@ module.exports = {
   variants: {
     extend: {
       animation: ['hover', 'focus'],
+      ringWidth: ['hover', 'focus', 'group-focus'],
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }
