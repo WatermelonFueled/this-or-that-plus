@@ -1,15 +1,9 @@
 import { useState } from 'react'
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import 'firebase/firestore'
 import 'firebase/auth'
-import {
-  AuthCheck,
-  FirebaseAppProvider,
-} from 'reactfire'
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query'
+import { FirebaseAppProvider } from 'reactfire'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 import CONFIG from './config.json'
@@ -35,9 +29,7 @@ const App = (): JSX.Element => {
             <main className="w-full max-w-7xl mx-auto">
               <Switch>
                 <Route path="/admin">
-                  <AuthCheck fallback={<Redirect to="/" />}>
-                    <Admin />
-                  </AuthCheck>
+                  <Admin />
                 </Route>
                 <Route path="/episodes">
                   <Episodes />

@@ -3,6 +3,7 @@ export interface optionType {
 }
 
 export interface questionType {
+  id: string;
   episodeId: string;
   time: number; // seconds
   prompt: string;
@@ -10,7 +11,7 @@ export interface questionType {
 }
 
 export interface episodeType {
-  id?: string;
+  id: string;
   videoId: string;
   title: string;
   date: Date;
@@ -29,8 +30,9 @@ export enum RESPONSE {
 
 
 export interface responseType {
-  episode: string;
-  question: string;
+  id: string;
+  episodeId: string;
+  questionId: string;
   uid: string;
   option: RESPONSE;
   date: Date;

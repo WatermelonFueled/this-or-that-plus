@@ -1,5 +1,5 @@
 import {
-  useUser,
+  useSigninCheck,
   useFirestore
 } from "reactfire"
 import { Redirect } from 'react-router-dom'
@@ -12,16 +12,14 @@ import { getYoutubeData } from "../api";
 import { extractTitle } from "../util";
 
 const ADMIN_UID = 'IU7cEMs76pScUPdwq7N6lY1dYOp1'
+export const isAdmin = (uid) => uid === ADMIN_UID
 
-export const useIsAdmin = () => {
-  const { data: user } = useUser()
-  return user.uid === ADMIN_UID;
-}
+const Admin = (): JSX.Element | null => {
+  const { status, data: signInCheckResult } = useSigninCheck()
 
-const Admin = ():JSX.Element => {
-  const isAdmin = useIsAdmin()
+  if (status === 'loading') return null
 
-  return isAdmin ? (
+  return signInCheckResult.signedIn && isAdmin(signInCheckResult.user?.uid) ? (
     <div
       className="p-4 flex flex-col gap-8 sm:gap-10 lg:gap-12"
     >
@@ -103,6 +101,7 @@ const NewEpisodeForm = ():JSX.Element => {
     if (watchVideoId && !youtubeData.isLoading) {
       youtubeData.refetch()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchVideoId])
 
   useEffect(() => {
@@ -115,7 +114,7 @@ const NewEpisodeForm = ():JSX.Element => {
         if (snippet.publishedAt) setValue('date', new Date(snippet.publishedAt))
       }
     }
-  }, [youtubeData.isSuccess, youtubeData.data])
+  }, [youtubeData.isSuccess, youtubeData.data, setValue])
 
   const firestore = useFirestore()
 

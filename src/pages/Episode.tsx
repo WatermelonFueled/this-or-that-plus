@@ -1,79 +1,38 @@
-import { useEffect, useReducer, useState } from "react"
-import { useLocation, useParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
-import { episodeType, questionType, RESPONSE } from "../schema"
+import { episodeType, questionType, responseType } from "../schema"
 import { findLastIndex } from "../util"
 import VideoPlayer from "../components/VideoPlayer"
 import ResponseButton from "../components/ResponseButton"
-
-const exampleData = {
-  episode: {
-    id: 'test',
-    videoId: '2EU4ZpIq87s',
-    title: 'Test title hello',
-    date: new Date(1999, 10, 11, 12, 13),
-    questions: ['a', 'b', 'c']
-  },
-  questions: {
-    a: {
-      episodeId: 'test',
-      time: 11,
-      prompt: 'What is your name?',
-      options: [
-        {text: 'Arthur'},
-        {text: 'Lancelot'}
-      ]
-    },
-    b: {
-      episodeId: 'test',
-      time: 22,
-      prompt: 'What is your quest?',
-      options: [
-        {text: 'Find the Holy Grail'},
-        {text: 'Throw the Holy Hand Grenade'},
-        {text: 'Bite my thumb at you'}
-      ]
-    },
-    c: {
-      episodeId: 'test',
-      time: 33,
-      prompt: 'What is the air-speed velocity of an unladen swallow?',
-      options: [
-        {text: 'What?'},
-        {text: '10 m/s'}
-      ]
-    }
-  }
-}
+import { useSigninCheck, useFirestore, useFirestoreCollectionData, useUser } from "reactfire"
+import { Login } from "../Menu/Auth"
 
 
-
+type questionsMap = { [key: string]: questionType }
 
 const Episode = (): JSX.Element => {
   const { episodeName } = useParams<{ episodeName: string; }>()
-  const location = useLocation()
-  const [episode, setEpisode] = useState<episodeType | null>(location?.state as episodeType ?? null)
-  const [questions, setQuestions] = useState<{ [key: string]: questionType } | null>()
-  const [index, setIndex] = useState(-1)
-  const [responses, dispatch] = useReducer(responseReducer, [])
 
-  useEffect(() => {
-    if (episodeName) {
-      // load ep
-      setIndex(-1)
-      setEpisode(exampleData.episode)
-      setQuestions(exampleData.questions)
-      dispatch({
-        type: 'set',
-        toSet: new Array(exampleData.episode.questions.length).fill(RESPONSE.BLANK)
-      })
-    }
-  }, [episodeName])
+  const firestore = useFirestore()
+  const { data: [episodeUnknown] } = useFirestoreCollectionData(
+    firestore.collection('episodes').where('title', '==', decodeURIComponent(episodeName)),
+    { initialData: [], idField: 'id' }
+  )
+  const episode = episodeUnknown as unknown as episodeType
+
+  const [index, setIndex] = useState(-1)
+
+  const [questions, setQuestions] = useState<questionsMap | null>()
+  const currentQuestion = questions?.[episode?.questions?.[index]] ?? null
+
+  const { status, data: signInCheckResult } = useSigninCheck();
 
   return (
     <div
-      className=""
+    className=""
     >
+      {episode && <QuestionsLoader episodeId={episode.id} setQuestions={setQuestions} />}
       <VideoPlayer
         videoId={episode?.videoId}
         playAutomatically
@@ -86,29 +45,18 @@ const Episode = (): JSX.Element => {
       <p>
         {episode?.title ?? ''}
       </p>
-      {index >= 0 && episode && questions && (
-        <>
-        <p>
-          {questions[episode.questions[index]].prompt}
-        </p>
-        <div
-          className="grid grid-cols-2 lg:auto-cols-fr gap-3 p-3"
-        >
-          {questions[episode.questions[index]].options.map(
-            ({ text }, response) => (
-              <ResponseButton
-                key={text}
-                onClick={() => {
-                  dispatch({ type: 'respond', response, index })
-                }}
-                checked={response === responses[index]}
-              >
-                {text}
-              </ResponseButton>
-            )
-          )}
-        </div>
-        </>
+      <p>
+        {currentQuestion?.prompt ?? ''}
+      </p>
+      {signInCheckResult?.signedIn ? (
+        episode?.id && questions && (
+          <ResponseGrid
+            episodeId={episode.id}
+            question={currentQuestion}
+          />
+        )
+      ): (
+        <Login />
       )}
     </div>
   )
@@ -117,33 +65,82 @@ const Episode = (): JSX.Element => {
 export default Episode
 
 
-interface respondAction {
-  type: 'respond';
-  response: RESPONSE;
-  index: number;
-}
-interface clearAction {
-  type: 'clear';
-}
-interface setAction {
-  type: 'set';
-  toSet: RESPONSE[];
+const QuestionsLoader = ({ episodeId, setQuestions }): null => {
+  // TODO try to reduce how much this runs?
+  const firestore = useFirestore()
+
+  const { data: questionsUnknown } = useFirestoreCollectionData(
+    firestore.collection('questions').where('episodeId', '==', episodeId),
+    { initialData: [], idField: 'id' }
+  )
+
+  useEffect(() => {
+    if (questionsUnknown) {
+      setQuestions(
+        (questionsUnknown as unknown as questionType[]).reduce(
+          (questionsObj, question) => {
+            questionsObj[question.id] = question
+            return questionsObj
+          },
+          {}
+        )
+      )
+    }
+  }, [questionsUnknown])
+
+  return null
 }
 
-const responseReducer = (
-  state: RESPONSE[],
-  action: respondAction | clearAction | setAction
-) => {
-  switch (action.type) {
-    case 'respond':
-      const updated = [...state]
-      updated.splice(action.index, 1, action.response)
-      return updated
-    case 'clear':
-      return [...state].fill(RESPONSE.BLANK)
-    case 'set':
-      return [...action.toSet]
-    default:
-      throw new Error()
+
+const ResponseGrid = (
+  {
+    episodeId,
+    question,
+  }: {
+    episodeId: string;
+    question: questionType | null;
   }
+): JSX.Element => {
+  const { data: user } = useUser()
+  const responsesRef = useFirestore().collection('responses')
+  const { data: responsesUnknown } = useFirestoreCollectionData(
+    responsesRef.where('episodeId', '==', episodeId).where('uid', '==', user.uid),
+    { initialData: [], idField: 'id' }
+  )
+  const responses = responsesUnknown as unknown as responseType[]
+
+  const currentResponse = responses.find(({ questionId }) => questionId === question?.id )
+
+  return (
+    <div
+      className="grid grid-cols-2 lg:auto-cols-fr gap-3 p-3"
+    >
+      {question && question.options.map(
+        ({ text }, option) => (
+          <ResponseButton
+            key={text}
+            onClick={() => {
+              if (currentResponse) {
+                responsesRef.doc(currentResponse.id).update({
+                  option,
+                  date: new Date()
+                })
+              } else {
+                responsesRef.add({
+                  episodeId,
+                  questionId: question.id,
+                  uid: user.uid,
+                  option,
+                  date: new Date()
+                })
+              }
+            }}
+            checked={option === currentResponse?.option}
+          >
+            {text}
+          </ResponseButton>
+        )
+      )}
+    </div>
+  )
 }
