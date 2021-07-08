@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
+import CONFIG from '../config.json'
 import { episodeType, questionType, responseType } from "../schema"
 import { findLastIndex } from "../util"
 import VideoPlayer from "../components/VideoPlayer"
@@ -49,7 +50,7 @@ const Episode = (): JSX.Element => {
         {currentQuestion?.prompt ?? ''}
       </p>
       {signInCheckResult?.signedIn ? (
-        episode?.id && questions && (
+        episode?.id && currentQuestion && (
           <ResponseGrid
             episodeId={episode.id}
             question={currentQuestion}
@@ -67,10 +68,10 @@ export default Episode
 
 const QuestionsLoader = ({ episodeId, setQuestions }): null => {
   // TODO try to reduce how much this runs?
-  const firestore = useFirestore()
+  const questionsRef = useFirestore().collection('questions')
 
   const { data: questionsUnknown } = useFirestoreCollectionData(
-    firestore.collection('questions').where('episodeId', '==', episodeId),
+    questionsRef.where('episodeId', '==', episodeId),
     { initialData: [], idField: 'id' }
   )
 
@@ -98,11 +99,13 @@ const ResponseGrid = (
     question,
   }: {
     episodeId: string;
-    question: questionType | null;
+    question: questionType;
   }
 ): JSX.Element => {
   const { data: user } = useUser()
-  const responsesRef = useFirestore().collection('responses')
+  const serverIncrement = useFirestore.FieldValue.increment;
+  const firestore = useFirestore()
+  const responsesRef = firestore.collection('responses')
   const { data: responsesUnknown } = useFirestoreCollectionData(
     responsesRef.where('episodeId', '==', episodeId).where('uid', '==', user.uid),
     { initialData: [], idField: 'id' }
@@ -110,6 +113,24 @@ const ResponseGrid = (
   const responses = responsesUnknown as unknown as responseType[]
 
   const currentResponse = responses.find(({ questionId }) => questionId === question?.id )
+
+  const questionsRef = firestore.collection('questions')
+
+  const [counts, setCounts] = useState({ total: 0 })
+  useEffect(() => {
+    questionsRef.doc(question.id).collection('shards').get().then((snapshot) => {
+      const aggregated = { total: 0 };
+      snapshot.forEach(shard => {
+        for (const [option, count] of Object.entries(shard.data())) {
+          aggregated[option] = (aggregated?.[option] ?? 0) + count
+          aggregated.total += count
+        }
+      });
+      setCounts(aggregated)
+      console.debug(aggregated)
+    })
+  }, [question.id])
+
 
   return (
     <div
@@ -120,24 +141,48 @@ const ResponseGrid = (
           <ResponseButton
             key={text}
             onClick={() => {
+              const batch = firestore.batch()
+
+              const shardId = Math.floor(Math.random() * CONFIG.firestoreQuestionsNumShards).toString();
+              const shardRef = questionsRef.doc(question.id).collection('shards').doc(shardId)
+
               if (currentResponse) {
-                responsesRef.doc(currentResponse.id).update({
+                batch.update(responsesRef.doc(currentResponse.id), {
                   option,
                   date: new Date()
                 })
+                batch.update(shardRef, {
+                  [option.toString()]: serverIncrement(1),
+                  [currentResponse.option.toString()]: serverIncrement(-1),
+                })
               } else {
-                responsesRef.add({
+                batch.set(responsesRef.doc(), {
                   episodeId,
                   questionId: question.id,
                   uid: user.uid,
                   option,
                   date: new Date()
                 })
+                batch.update(shardRef, {
+                  [option.toString()]: serverIncrement(1),
+                })
               }
+
+              batch.commit().then(() => {
+                setCounts(prev => (currentResponse ? {
+                  ...prev,
+                  [option]: prev[option] + 1,
+                  [currentResponse.option]: prev[currentResponse.option] - 1,
+                } : {
+                  ...prev,
+                  [option]: prev[option] + 1
+                }))
+              })
             }}
             checked={option === currentResponse?.option}
           >
             {text}
+            {counts[option] != undefined && `(${counts[option]}/${counts.total})`}
           </ResponseButton>
         )
       )}
