@@ -1,5 +1,6 @@
 export interface optionType {
   text: string;
+
 }
 
 export interface questionType {
@@ -8,6 +9,12 @@ export interface questionType {
   time: number; // seconds
   prompt: string;
   options: optionType[];
+  numShards?: number;
+  shards?: {
+    [key: string]: {
+      [key: string]: number; // count
+    };
+  };
 }
 
 export interface episodeType {

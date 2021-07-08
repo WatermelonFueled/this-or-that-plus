@@ -8,6 +8,7 @@ import { PlusIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/
 import { useQuery } from "react-query";
 import { useEffect } from "react";
 import queryString from 'query-string';
+import CONFIG from '../config.json';
 import { getYoutubeData } from "../api";
 import { extractTitle } from "../util";
 
@@ -63,7 +64,6 @@ const defaultValues = {
     options: [{ text: '' }, { text: '' }]
   }]
 }
-
 
 const NewEpisodeForm = ():JSX.Element => {
   const { register, watch, setValue, handleSubmit, control, reset } = useForm<Inputs>({ defaultValues })
@@ -129,7 +129,19 @@ const NewEpisodeForm = ():JSX.Element => {
 
     const questionIds = questions.map((questionData) => {
       const questionRef = firestore.collection('questions').doc()
-      batch.set(questionRef, { episodeId: episodeRef.id, ...questionData })
+      batch.set(questionRef, {
+        episodeId: episodeRef.id,
+        numShards: CONFIG.firestoreQuestionsNumShards,
+        ...questionData
+      })
+      // shards for response counters per option
+      for (let i = 0; i < CONFIG.firestoreQuestionsNumShards; i++) {
+        const shardRef = questionRef.collection('shards').doc(i.toString());
+        batch.set(shardRef, questionData.options.reduce(
+          (acc, opt, optIndex) => ({ [optIndex.toString()]: 0, ...acc }),
+          {}
+        ));
+      }
       return questionRef.id
     })
 
