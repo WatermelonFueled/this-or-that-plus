@@ -22,7 +22,7 @@ const Menu = (
       </div>
     </div>
     <button
-      className={`fixed right-6 bottom-6 group rounded-full outline-none transition focus:ring-4 ring-gray-300 bg-purple-300 bg-opacity-50 hover:bg-opacity-70 ${showMenu ? 'opacity-0' : ''}`}
+      className={`fixed right-6 bottom-6 group rounded-full outline-none transition focus:ring-4 ring-purple-500 dark:ring-gray-300 bg-purple-300 bg-opacity-50 hover:bg-opacity-70 ${showMenu ? 'opacity-0' : ''}`}
       type="button"
       onClick={() => setShowMenu(true)}
     >

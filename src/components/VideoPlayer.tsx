@@ -73,7 +73,7 @@ const VideoPlayer = (props: propTypes): JSX.Element => {
   }, [playState, props])
 
   return (
-    <div className="ratio-9-16-cont xl:h-180 xl:pb-0">
+    <div className="ratio-9-16-cont">
       <div id="youtube-iframe" className="ratio-9-16-item"></div>
     </div>
   );

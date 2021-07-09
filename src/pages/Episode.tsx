@@ -8,6 +8,7 @@ import VideoPlayer from "../components/VideoPlayer"
 import ResponseButton from "../components/ResponseButton"
 import { useSigninCheck, useFirestore, useFirestoreCollectionData, useUser } from "reactfire"
 import { Login } from "../Menu/Auth"
+import Loading from "../components/Loading"
 
 
 type questionsMap = { [key: string]: questionType }
@@ -31,34 +32,41 @@ const Episode = (): JSX.Element => {
 
   return (
     <div
-    className=""
+      className="w-full flex flex-col flex-nowrap 2xl:flex-row"
     >
       {episode && <QuestionsLoader episodeId={episode.id} setQuestions={setQuestions} />}
-      <VideoPlayer
-        videoId={episode?.videoId}
-        playAutomatically
-        onTimeCheck={(current) => setIndex(
-          questions && episode
-          ? findLastIndex(episode.questions, (qId) => current > questions[qId].time)
-          : -1
+      <div className="w-full 2xl:w-3/4 ">
+        <VideoPlayer
+          videoId={episode?.videoId}
+          playAutomatically
+          onTimeCheck={(current) => setIndex(
+            questions && episode
+            ? findLastIndex(episode.questions, (qId) => current > questions[qId].time)
+            : -1
+          )}
+        />
+        <p className="p-4 text-gray-700 dark:text-gray-300 rounded-b-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20">
+          {episode?.title ?? ''}
+        </p>
+      </div>
+      <div className="py-4 flex flex-col gap-4 2xl:w-1/4">
+        <p
+          className={`mx-4 pl-2 text-xl text-gray-700 dark:text-gray-300 transition ${currentQuestion?.prompt ? 'opacity-100 border-l-8 border-purple-500' : 'opacity-0 border-l-0'}`}
+        >
+          {currentQuestion?.prompt ?? ''}
+        </p>
+        {status === 'loading' && <Loading />}
+        {signInCheckResult?.signedIn ? (
+          episode?.id && currentQuestion && (
+            <ResponseGrid
+              episodeId={episode.id}
+              question={currentQuestion}
+            />
+          )
+        ): (
+          <Login />
         )}
-      />
-      <p>
-        {episode?.title ?? ''}
-      </p>
-      <p>
-        {currentQuestion?.prompt ?? ''}
-      </p>
-      {signInCheckResult?.signedIn ? (
-        episode?.id && currentQuestion && (
-          <ResponseGrid
-            episodeId={episode.id}
-            question={currentQuestion}
-          />
-        )
-      ): (
-        <Login />
-      )}
+      </div>
     </div>
   )
 }
@@ -87,6 +95,7 @@ const QuestionsLoader = ({ episodeId, setQuestions }): null => {
         )
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionsUnknown])
 
   return null
@@ -129,17 +138,22 @@ const ResponseGrid = (
       setCounts(aggregated)
       console.debug(aggregated)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question.id])
 
 
   return (
     <div
-      className="grid grid-cols-2 lg:auto-cols-fr gap-3 p-3"
+      className="px-4 grid grid-cols-2 lg:auto-cols-fr 2xl:grid-cols-1 gap-4"
     >
       {question && question.options.map(
         ({ text }, option) => (
           <ResponseButton
             key={text}
+            checked={option === currentResponse?.option}
+            count={counts[option]}
+            countTotal={counts.total}
+            showCount={!!currentResponse}
             onClick={() => {
               const batch = firestore.batch()
 
@@ -175,14 +189,13 @@ const ResponseGrid = (
                   [currentResponse.option]: prev[currentResponse.option] - 1,
                 } : {
                   ...prev,
-                  [option]: prev[option] + 1
+                  [option]: prev[option] + 1,
+                  total: prev.total + 1,
                 }))
               })
             }}
-            checked={option === currentResponse?.option}
           >
             {text}
-            {counts[option] != undefined && `(${counts[option]}/${counts.total})`}
           </ResponseButton>
         )
       )}

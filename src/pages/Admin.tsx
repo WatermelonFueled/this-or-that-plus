@@ -22,7 +22,7 @@ const Admin = (): JSX.Element | null => {
 
   return signInCheckResult.signedIn && isAdmin(signInCheckResult.user?.uid) ? (
     <div
-      className="p-4 flex flex-col gap-8 sm:gap-10 lg:gap-12"
+      className="w-full max-w-7xl p-4 flex flex-col gap-8 sm:gap-10 lg:gap-12"
     >
       <h1 className="heading">
         Admin

@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <div className="relative w-full min-h-screen dark:bg-gray-900 dark:text-gray-100">
-            <main className="w-full max-w-7xl mx-auto">
+            <main className="max-w-full mx-auto">
               <Switch>
                 <Route path="/admin">
                   <Admin />

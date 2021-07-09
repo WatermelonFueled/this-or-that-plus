@@ -13,7 +13,7 @@ const Episodes = ():JSX.Element => {
       <h1 className="heading">
         Episodes
       </h1>
-      <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {episodes && episodes.map((episode) => {
           let ep = episode as unknown as episodeType
           return (
@@ -38,7 +38,7 @@ const EpisodeLink = ({ episode }: { episode: episodeType }) => (
         pathname: `/${encodeURIComponent(episode.title)}`,
         state: episode
       }}
-      className="group block rounded-xl bg-gray-100 bg-opacity-30 transition hover:bg-purple-500 focus:bg-purple-500 hover:bg-opacity-30 focus:bg-opacity-30"
+      className="group block rounded-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20 transition hover:bg-purple-500 focus:bg-purple-500"
     >
       <YouTubeThumb videoId={episode.videoId} title={episode.title} />
       <div

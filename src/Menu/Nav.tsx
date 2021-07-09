@@ -3,12 +3,13 @@ import { useSigninCheck } from 'reactfire'
 
 import { Login, Logout } from './Auth'
 import { isAdmin } from '../pages/Admin'
+import Loading from '../components/Loading'
 
 
 const Nav = (): JSX.Element | null => {
   const { status, data: signInCheckResult } = useSigninCheck()
 
-  if (status === 'loading') return null
+  if (status === 'loading') return <Loading />
 
   return signInCheckResult.signedIn ? (
     <nav
@@ -17,7 +18,7 @@ const Nav = (): JSX.Element | null => {
       <NavLink
         to="/episodes"
         className="navlink"
-        activeClassName="tracking-widest"
+        activeClassName="tracking-widest font-bold"
       >
         Episodes
       </NavLink>
@@ -25,7 +26,7 @@ const Nav = (): JSX.Element | null => {
         <NavLink
           to="/admin"
           className="navlink"
-          activeClassName="tracking-widest"
+          activeClassName="tracking-widest font-bold"
         >
           Admin
         </NavLink>
