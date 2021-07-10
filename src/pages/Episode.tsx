@@ -9,6 +9,7 @@ import ResponseButton from "../components/ResponseButton"
 import { useSigninCheck, useFirestore, useFirestoreCollectionData, useUser } from "reactfire"
 import { Login } from "../Menu/Auth"
 import Loading from "../components/Loading"
+import Logo from "../components/Logo"
 
 
 type questionsMap = { [key: string]: questionType }
@@ -32,7 +33,7 @@ const Episode = (): JSX.Element => {
 
   return (
     <div
-      className="w-full flex flex-col flex-nowrap 2xl:flex-row"
+      className="w-full min-h-screen flex flex-col flex-nowrap 2xl:flex-row"
     >
       {episode && <QuestionsLoader episodeId={episode.id} setQuestions={setQuestions} />}
       <div className="w-full 2xl:w-3/4 ">
@@ -49,13 +50,19 @@ const Episode = (): JSX.Element => {
           {episode?.title ?? ''}
         </p>
       </div>
-      <div className="py-4 flex flex-col gap-4 2xl:w-1/4">
+      <div className="py-4 relative flex flex-col gap-4 flex-grow 2xl:w-1/4">
+        <Logo
+          left={{ fill: '#7d49f520' }}
+          right={{ fill: '#c8b0ff20' }}
+          duration="5000ms"
+          className="absolute w-48 h-48 2xl:w-80 2xl:h-80 m-auto inset-0"
+        />
+        {status === 'loading' && <Loading className="absolute m-auto inset-0" />}
         <p
           className={`mx-4 pl-2 text-xl text-gray-700 dark:text-gray-300 transition ${currentQuestion?.prompt ? 'opacity-100 border-l-8 border-purple-500' : 'opacity-0 border-l-0'}`}
         >
           {currentQuestion?.prompt ?? ''}
         </p>
-        {status === 'loading' && <Loading />}
         {signInCheckResult?.signedIn ? (
           episode?.id && currentQuestion && (
             <ResponseGrid
