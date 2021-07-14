@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import 'firebase/firestore'
 import 'firebase/auth'
 import { FirebaseAppProvider } from 'reactfire'
@@ -13,6 +13,7 @@ import Episode from './pages/Episode'
 
 import Episodes from './pages/Episodes'
 import Menu from './Menu/Menu'
+import Background from './components/Background'
 
 const queryClient = new QueryClient()
 
@@ -25,8 +26,9 @@ const App = (): JSX.Element => {
     >
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <div className="relative w-full min-h-screen dark:bg-gray-900 dark:text-gray-100">
-            <main className="max-w-full mx-auto">
+          <div className="relative w-full min-h-screen dark:text-gray-100">
+            <Background />
+            <main className="relative max-w-full mx-auto z-10">
               <Switch>
                 <Route path="/admin">
                   <Admin />
@@ -37,6 +39,11 @@ const App = (): JSX.Element => {
                 <Route path="/:episodeName">
                   <Episode />
                 </Route>
+                <Redirect
+                  from="/"
+                  exact
+                  to="/episodes"
+                />
               </Switch>
             </main>
             <Menu

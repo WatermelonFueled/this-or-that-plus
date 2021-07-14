@@ -46,23 +46,28 @@ const Episode = (): JSX.Element => {
             : -1
           )}
         />
-        <p className="p-4 text-gray-700 dark:text-gray-300 rounded-b-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20">
-          {episode?.title ?? ''}
-        </p>
       </div>
       <div className="py-4 relative flex flex-col gap-4 flex-grow 2xl:w-1/4">
-        <Logo
-          left={{ fill: '#7d49f520' }}
-          right={{ fill: '#c8b0ff20' }}
-          duration="5000ms"
-          className="absolute w-48 h-48 2xl:w-80 2xl:h-80 m-auto inset-0"
-        />
         {status === 'loading' && <Loading className="absolute m-auto inset-0" />}
-        <p
-          className={`mx-4 pl-2 text-xl text-gray-700 dark:text-gray-300 transition ${currentQuestion?.prompt ? 'opacity-100 border-l-8 border-purple-500' : 'opacity-0 border-l-0'}`}
-        >
-          {currentQuestion?.prompt ?? ''}
-        </p>
+        {currentQuestion?.prompt ? (
+          <p
+            className="mx-4 pl-2 text-xl text-gray-700 dark:text-gray-300 transition opacity-100 border-l-8 border-purple-500"
+          >
+            {currentQuestion?.prompt}
+          </p>
+        ) : (
+          <>
+            <h1 className="heading p-4">
+              {episode?.title}
+            </h1>
+            <Logo
+              className="w-16 h-16 self-center"
+              duration="4000ms"
+              delay={.5}
+              repeat={1}
+            />
+          </>
+        )}
         {signInCheckResult?.signedIn ? (
           episode?.id && currentQuestion && (
             <ResponseGrid
