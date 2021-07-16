@@ -7,7 +7,10 @@ export const Login = ():JSX.Element => {
 
   const uiConfig = {
     signInFlow: 'popup',
-    signInOptions: [auth.GoogleAuthProvider.PROVIDER_ID],
+    signInOptions: [
+      auth.GoogleAuthProvider.PROVIDER_ID,
+      auth.FacebookAuthProvider.PROVIDER_ID,
+    ],
     callbacks: {
       signInSuccessWithAuthResult: () => {
         return false // Avoid redirects after sign-in.

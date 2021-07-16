@@ -59,11 +59,10 @@ const Welcome = (): JSX.Element | null => {
   return signInCheckResult?.signedIn ? null : (
     <div className="pt-4 flex flex-col gap-4 items-center">
       <h1 className="heading text-5xl dark:text-gray-100">
-        Welcome to This or That
+        Welcome to This or That Plus
         <LogoNoAnim
-          className="inline w-12 h-12 ml-4 mr-1 align-top animate-pulse"
+          className="inline w-12 h-12 ml-2 align-top"
         />
-        Plus
       </h1>
       <p className="">
         Simply answer along with the prompts and see how you compare to the community
