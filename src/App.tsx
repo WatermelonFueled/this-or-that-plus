@@ -6,8 +6,6 @@ import { FirebaseAppProvider } from 'reactfire'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
-import CONFIG from './config.json'
-
 import Admin from './pages/Admin'
 import Episode from './pages/Episode'
 
@@ -17,12 +15,23 @@ import Background from './components/Background'
 
 const queryClient = new QueryClient()
 
+const firebaseConfig = {
+  apiKey: 'AIzaSyBrsa7k3ajtgKbUqS34kWf0y69ZEXSy0-Q',
+  authDomain: 'thisorthat-lol.firebaseapp.com',
+  databaseURL: 'https://thisorthat-lol.firebaseio.com',
+  projectId: 'thisorthat-lol',
+  storageBucket: 'thisorthat-lol.appspot.com',
+  messagingSenderId: '434578118432',
+  appId: '1:434578118432:web:cc3e3281cfd742cf94e945',
+  measurementId: 'G-BT0MKTC0XM'
+}
+
 const App = (): JSX.Element => {
   const [showMenu, setShowMenu] = useState(false)
 
   return (
     <FirebaseAppProvider
-      firebaseConfig={CONFIG.firebaseConfig}
+      firebaseConfig={firebaseConfig}
     >
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>

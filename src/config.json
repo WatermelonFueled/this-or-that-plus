@@ -1,14 +1,3 @@
 {
-  "firebaseConfig": {
-    "apiKey": "AIzaSyBrsa7k3ajtgKbUqS34kWf0y69ZEXSy0-Q",
-    "authDomain": "thisorthat-lol.firebaseapp.com",
-    "databaseURL": "https://thisorthat-lol.firebaseio.com",
-    "projectId": "thisorthat-lol",
-    "storageBucket": "thisorthat-lol.appspot.com",
-    "messagingSenderId": "434578118432",
-    "appId": "1:434578118432:web:cc3e3281cfd742cf94e945",
-    "measurementId": "G-BT0MKTC0XM"
-  },
-  "firestoreQuestionsNumShards": 20,
-  "youtubeDataAPIKey": "AIzaSyBVuY-NaRBhqQNAG2L_3YgaLO3H3yY64WE"
+  "firestoreQuestionsNumShards": 20
 }

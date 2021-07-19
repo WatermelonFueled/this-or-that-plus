@@ -1,10 +1,8 @@
-import CONFIG from './config.json'
-
 
 export const getYoutubeData = async (
   videoId: string, fields = 'snippet/thumbnails/high', part='snippet'
 ): Promise<youtubeDataResponseType> => {
-  const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${CONFIG.youtubeDataAPIKey}&part=${part}&fields=items(${fields})`)
+  const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${process.env.REACT_APP_YOUTUBE_DATA_API_KEY}&part=${part}&fields=items(${fields})`)
   if (!response.ok) {
     throw new Error('Error while retrieving data');
   }

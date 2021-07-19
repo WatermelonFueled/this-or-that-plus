@@ -9,10 +9,12 @@ export const Login = ():JSX.Element => {
     signInFlow: 'popup',
     signInOptions: [
       auth.GoogleAuthProvider.PROVIDER_ID,
-      auth.FacebookAuthProvider.PROVIDER_ID,
+      // auth.FacebookAuthProvider.PROVIDER_ID,
+      auth.TwitterAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
-      signInSuccessWithAuthResult: () => {
+      signInSuccessWithAuthResult: (result) => {
+        console.debug(result)
         return false // Avoid redirects after sign-in.
       },
 
