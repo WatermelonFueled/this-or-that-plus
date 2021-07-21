@@ -1,4 +1,4 @@
-# This or That Plus ![+](./public/media/logo/logo-light.svg)
+# This or That Plus <img src="./public/media/logo/logo-light.svg" width="64" height="64" />
 
 **Looking for the site? [Click here](https://thisorthatplus.com).**
 
