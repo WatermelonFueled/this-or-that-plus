@@ -1,6 +1,6 @@
 # This or That Plus
 
-[+](public/media/logo/logo-light.svg)
+[+](./public/media/logo/logo-light.svg)
 
 **Looking for the site? [Click here](https://thisorthatplus.com).**
 
