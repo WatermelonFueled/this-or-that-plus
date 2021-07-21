@@ -27,4 +27,7 @@
   .ratio-9-16-item {
     @apply absolute inset-0 w-full h-full;
   }
+  .p-resp {
+    @apply p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-14;
+  }
 }

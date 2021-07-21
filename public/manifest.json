@@ -3,7 +3,7 @@
   "name": "This or That Plus",
   "icons": [
     {
-      "src": "logo-dark.svg",
+      "src": "media/logo/logo-dark.svg",
       "sizes": "any",
       "type": "image/svg"
     }

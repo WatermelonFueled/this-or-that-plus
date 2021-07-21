@@ -10,7 +10,7 @@ const Episodes = ():JSX.Element => {
   const { data: episodes } = useFirestoreCollectionData(episodesRef, { idField: 'id' })
 
   return (
-    <div className="p-4 flex flex-col gap-8 sm:gap-10 lg:gap-12">
+    <div className="p-resp flex flex-col gap-8 sm:gap-10 lg:gap-12">
       <Welcome />
       <h1 className="heading">
         Episodes
@@ -40,7 +40,7 @@ const EpisodeLink = ({ episode }: { episode: episodeType }) => (
         pathname: `/${encodeURIComponent(episode.title)}`,
         state: episode
       }}
-      className="group block rounded-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20 transition hover:bg-purple-500 focus:bg-purple-500"
+      className="group block rounded-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20 transition hover:bg-purple-300 focus:bg-purple-300 dark:hover:bg-purple-700 dark:focus:bg-purple-700"
     >
       <YouTubeThumb videoId={episode.videoId} title={episode.title} />
       <div
