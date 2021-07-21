@@ -14,7 +14,6 @@ export const Login = ():JSX.Element => {
     ],
     callbacks: {
       signInSuccessWithAuthResult: (result) => {
-        console.debug(result)
         return false // Avoid redirects after sign-in.
       },
 

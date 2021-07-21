@@ -148,7 +148,6 @@ const ResponseGrid = (
         }
       });
       setCounts(aggregated)
-      console.debug(aggregated)
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question.id])
