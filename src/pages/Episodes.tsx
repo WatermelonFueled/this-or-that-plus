@@ -6,7 +6,7 @@ import YouTubeThumb from "../components/YoutubeThumb"
 import { episodeType } from "../schema"
 
 const Episodes = ():JSX.Element => {
-  const episodesRef = useFirestore().collection('episodes')
+  const episodesRef = useFirestore().collection('episodes').orderBy('date', 'desc')
   const { data: episodes } = useFirestoreCollectionData(episodesRef, { idField: 'id' })
 
   return (
