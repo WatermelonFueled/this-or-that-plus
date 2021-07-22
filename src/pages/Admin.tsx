@@ -46,6 +46,7 @@ type Inputs = {
   videoId: string;
   title: string;
   date: Date;
+  thumbHigh?: string;
   questions: {
     time: number;
     prompt: string;
@@ -108,10 +109,9 @@ const NewEpisodeForm = ():JSX.Element => {
     if (youtubeData.isSuccess && youtubeData.data) {
       const snippet = youtubeData.data?.items?.[0]?.snippet
       if (snippet) {
-        if (snippet.title) {
-          setValue('title', extractTitle(snippet.title))
-        }
+        if (snippet.title) setValue('title', extractTitle(snippet.title))
         if (snippet.publishedAt) setValue('date', new Date(snippet.publishedAt))
+        if (snippet.thumbnails?.high) setValue('thumbHigh', snippet.thumbnails.high.url)
       }
     }
   }, [youtubeData.isSuccess, youtubeData.data, setValue])

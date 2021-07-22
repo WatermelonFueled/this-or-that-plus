@@ -11,7 +11,6 @@ import { Login } from "../Menu/Auth"
 import Loading from "../components/Loading"
 import Logo from "../components/Logo"
 
-
 type questionsMap = { [key: string]: questionType }
 
 const Episode = (): JSX.Element => {
@@ -155,7 +154,7 @@ const ResponseGrid = (
 
   return (
     <div
-      className="px-4 grid grid-cols-2 lg:auto-cols-fr 2xl:grid-cols-1 gap-4"
+      className="px-4 grid grid-cols-1 sm:grid-cols-2 lg:auto-cols-fr 2xl:grid-cols-1 gap-4"
     >
       {question && question.options.map(
         ({ text }, option) => (
