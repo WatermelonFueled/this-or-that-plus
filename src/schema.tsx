@@ -22,7 +22,7 @@ export interface episodeType {
   videoId: string;
   title: string;
   date: Date;
-  thumbnail?: string;
+  thumbHigh?: string;
   questions: string[]; // question Ids
 }
 

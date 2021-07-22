@@ -42,7 +42,7 @@ const EpisodeLink = ({ episode }: { episode: episodeType }) => (
       }}
       className="group block rounded-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20 transition hover:bg-purple-300 focus:bg-purple-300 dark:hover:bg-purple-700 dark:focus:bg-purple-700"
     >
-      <YouTubeThumb videoId={episode.videoId} title={episode.title} />
+      <YouTubeThumb videoId={episode.videoId} title={episode.title} thumbUrl={episode.thumbHigh} />
       <div
         className="p-3 font-bold text-lg transition group-hover:text-purple-900 dark:group-hover:text-purple-100"
       >
