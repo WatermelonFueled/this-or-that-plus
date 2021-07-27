@@ -10,6 +10,8 @@ import { useSigninCheck, useFirestore, useFirestoreCollectionData, useUser } fro
 import { Login } from "../Menu/Auth"
 import Loading from "../components/Loading"
 import Logo from "../components/Logo"
+import { useEpisodesList } from "../useDatabase"
+import EpisodeLink from "../components/EpisodeLink"
 
 type questionsMap = { [key: string]: questionType }
 
@@ -30,6 +32,8 @@ const Episode = (): JSX.Element => {
 
   const { status, data: signInCheckResult } = useSigninCheck();
 
+  const [stopped, setStopped] = useState(false);
+
   return (
     <div
       className="w-full min-h-screen flex flex-col flex-nowrap 2xl:flex-row"
@@ -39,11 +43,14 @@ const Episode = (): JSX.Element => {
         <VideoPlayer
           videoId={episode?.videoId}
           playAutomatically
-          onTimeCheck={(current) => setIndex(
-            questions && episode
-            ? findLastIndex(episode.questions, (qId) => current > questions[qId].time)
-            : -1
-          )}
+          onTimeCheck={(current) => {
+            setIndex(questions && episode ? findLastIndex(
+                episode.questions, (qId) => current > questions[qId].time
+              ) : -1
+            )
+            if (stopped) setStopped(false)
+          }}
+          onStop={() => setStopped(true)}
         />
       </div>
       <div className="py-4 relative flex flex-col gap-4 flex-grow 2xl:w-1/4">
@@ -68,7 +75,7 @@ const Episode = (): JSX.Element => {
           </>
         )}
         {signInCheckResult?.signedIn ? (
-          episode?.id && currentQuestion && (
+          episode?.id && currentQuestion && !stopped && (
             <ResponseGrid
               episodeId={episode.id}
               question={currentQuestion}
@@ -76,6 +83,11 @@ const Episode = (): JSX.Element => {
           )
         ): (
           <Login />
+        )}
+        {episode?.id && (
+          <ChangeEpisode
+            currentId={episode.id}
+          />
         )}
       </div>
     </div>
@@ -208,6 +220,34 @@ const ResponseGrid = (
             {text}
           </ResponseButton>
         )
+      )}
+    </div>
+  )
+}
+
+
+const ChangeEpisode = ({ currentId }: { currentId: null | string }) => {
+  const episodes = useEpisodesList()
+
+  const currentIndex = episodes.findIndex(({ id }) => id === currentId)
+
+  return currentIndex === -1 ? null : (
+    <div className="grid grid-cols-2 mt-auto py-16 px-4 gap-4 w-128 max-w-full self-center">
+      {currentIndex > 0 ? (
+        <EpisodeLink episode={episodes[currentIndex - 1]}>
+          <p className="py-0.5 px-2">
+            Next
+          </p>
+        </EpisodeLink>
+      ) : (
+        <div />
+      )}
+      {currentIndex + 1 < episodes.length && (
+        <EpisodeLink episode={episodes[currentIndex + 1]}>
+          <p className="py-0.5 px-2 text-right">
+            Previous
+          </p>
+        </EpisodeLink>
       )}
     </div>
   )

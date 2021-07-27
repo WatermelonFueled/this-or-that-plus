@@ -1,13 +1,10 @@
-import { Link } from "react-router-dom"
-import { useFirestore, useFirestoreCollectionData, useSigninCheck } from "reactfire"
+import { useSigninCheck } from "reactfire"
+import EpisodeLink from "../components/EpisodeLink"
 import { LogoNoAnim } from "../components/Logo"
-import YouTubeThumb from "../components/YoutubeThumb"
-
-import { episodeType } from "../schema"
+import { useEpisodesList } from "../useDatabase"
 
 const Episodes = ():JSX.Element => {
-  const episodesRef = useFirestore().collection('episodes').orderBy('date', 'desc')
-  const { data: episodes } = useFirestoreCollectionData(episodesRef, { idField: 'id' })
+  const episodes = useEpisodesList()
 
   return (
     <div className="p-resp flex flex-col gap-8 sm:gap-10 lg:gap-12">
@@ -16,41 +13,23 @@ const Episodes = ():JSX.Element => {
         Episodes
       </h1>
       <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {episodes && episodes.map((episode) => {
-          let ep = episode as unknown as episodeType
-          return (
-            <EpisodeLink key={ep.id} episode={ep} />
-          )
-        })}
+        {episodes && episodes.map((ep) => (
+          <li className="">
+            <EpisodeLink key={ep.id} episode={ep}>
+              <div
+                className="p-3 text-lg font-bold transition group-hover:text-purple-900 dark:group-hover:text-purple-100"
+              >
+                {ep.title}
+              </div>
+            </EpisodeLink>
+          </li>
+        ))}
       </ol>
     </div>
   )
 }
 
 export default Episodes
-
-
-
-const EpisodeLink = ({ episode }: { episode: episodeType }) => (
-  <li
-    className=""
-  >
-    <Link
-      to={{
-        pathname: `/${encodeURIComponent(episode.title)}`,
-        state: episode
-      }}
-      className="group block rounded-xl bg-gray-700 dark:bg-gray-300 bg-opacity-20 transition hover:bg-purple-300 focus:bg-purple-300 dark:hover:bg-purple-700 dark:focus:bg-purple-700"
-    >
-      <YouTubeThumb videoId={episode.videoId} title={episode.title} thumbUrl={episode.thumbHigh} />
-      <div
-        className="p-3 font-bold text-lg transition group-hover:text-purple-900 dark:group-hover:text-purple-100"
-      >
-        {episode.title}
-      </div>
-    </Link>
-  </li>
-)
 
 
 const Welcome = (): JSX.Element | null => {

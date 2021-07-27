@@ -14,6 +14,7 @@ interface propTypes {
   videoId: string | undefined;
   playAutomatically: boolean | null;
   onTimeCheck: (current: number) => void;
+  onStop?: () => void;
 }
 
 const VideoPlayer = (props: propTypes): JSX.Element => {
@@ -62,7 +63,13 @@ const VideoPlayer = (props: propTypes): JSX.Element => {
         // @ts-ignore
         player.current.getCurrentTime()
           .then((current) => props.onTimeCheck(current))
-      }, 500)
+      }, 300)
+    } else if ((
+      playState === YT_PLAY_STATES.ENDED
+      || playState === YT_PLAY_STATES.UNSTARTED
+      ) && props.onStop
+    ) {
+      props.onStop()
     }
     return () => {
       if (interval) {
