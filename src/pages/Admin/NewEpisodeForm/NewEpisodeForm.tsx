@@ -1,45 +1,17 @@
-import {
-  useSigninCheck,
-  useFirestore
-} from "reactfire"
-import { Redirect } from 'react-router-dom'
-import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
-import { PlusIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/outline';
-import { useQuery } from "react-query";
 import { useEffect } from "react";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import queryString from 'query-string';
-import CONFIG from '../config.json';
-import { getYoutubeData } from "../api";
-import { extractTitle } from "../util";
+import { useQuery } from "react-query";
+import { useFirestore } from "reactfire";
+import { ChevronDownIcon, ChevronUpIcon, PlusIcon, TrashIcon } from "@heroicons/react/outline";
 
-const ADMIN_UID = 'IU7cEMs76pScUPdwq7N6lY1dYOp1'
-export const isAdmin = (uid) => uid === ADMIN_UID
-
-const Admin = (): JSX.Element | null => {
-  const { status, data: signInCheckResult } = useSigninCheck()
-
-  if (status === 'loading') return null
-
-  return signInCheckResult.signedIn && isAdmin(signInCheckResult.user?.uid) ? (
-    <div
-      className="w-full max-w-7xl p-4 flex flex-col gap-8 sm:gap-10 lg:gap-12"
-    >
-      <h1 className="heading">
-        Admin
-      </h1>
-      <h1 className="heading">
-        New Episode
-      </h1>
-      <NewEpisodeForm />
-    </div>
-  ) : (
-    <Redirect to="/" />
-  )
-}
-
-export default Admin
-
-/* --------------------------------------------------- */
+import CONFIG from '../../../config.json';
+import { RESPONSE } from "../../../schema";
+import { getYoutubeData } from "../../../api";
+import { extractTitle } from "../../../util";
+import HostsInputs from "./HostsInput";
+import OptionsInputs, { defaultValues as optionsDefault } from "./OptionsInputs";
+import HostResponsesInputs, { defaultValues as hostResponsesDefault } from "./HostResponsesInputs";
 
 type Inputs = {
   url?: string;
@@ -47,29 +19,40 @@ type Inputs = {
   title: string;
   date: Date;
   thumbHigh?: string;
+  hosts: string[];
   questions: {
     time: number;
     prompt: string;
     options: {
       text: string;
     }[];
+    hostResponses: {
+      host: string;
+      response: RESPONSE;
+      time: number;
+      final: boolean;
+    }[]
   }[];
 }
 
 const defaultValues = {
   url: '',
   title: '',
+  hosts: ['kobe', 'dash'],
   questions: [{
     time: 0,
     prompt: '',
-    options: [{ text: '' }, { text: '' }]
+    options: optionsDefault,
+    hostResponses: hostResponsesDefault,
   }]
 }
 
-const NewEpisodeForm = ():JSX.Element => {
-  const { register, watch, setValue, handleSubmit, control, reset } = useForm<Inputs>({ defaultValues })
+const NewEpisodeForm = (): JSX.Element => {
+  const {
+    register, watch, setValue, handleSubmit, control, reset
+  } = useForm<Inputs>({ defaultValues })
 
-  const { fields, append, remove, swap } = useFieldArray({
+  const questions = useFieldArray({
     control,
     name: "questions"
   });
@@ -94,7 +77,7 @@ const NewEpisodeForm = ():JSX.Element => {
 
   const youtubeData = useQuery(
     ['youtubeData', { videoId: watchVideoId }],
-    () => getYoutubeData(watchVideoId,'snippet(title,publishedAt,thumbnails/high)'),
+    () => getYoutubeData(watchVideoId, 'snippet(title,publishedAt,thumbnails/high)'),
     { enabled: false }
   )
 
@@ -102,7 +85,7 @@ const NewEpisodeForm = ():JSX.Element => {
     if (watchVideoId && !youtubeData.isLoading) {
       youtubeData.refetch()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchVideoId])
 
   useEffect(() => {
@@ -154,6 +137,7 @@ const NewEpisodeForm = ():JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+
       <label>
         <div>
           URL
@@ -164,6 +148,7 @@ const NewEpisodeForm = ():JSX.Element => {
           className="input"
         />
       </label>
+
       <label>
         <div>
           Title
@@ -174,11 +159,17 @@ const NewEpisodeForm = ():JSX.Element => {
           className="input"
         />
       </label>
+
+      <div>
+        Hosts
+      </div>
+      <HostsInputs {...{ control, register }} />
+
       <ol className="divide-y divide-purple-700">
         <div className="pt-3">
           Questions
         </div>
-        {fields.map((item, index) => (
+        {questions.fields.map((item, index) => (
           <li
             key={item.id}
             className="py-3 flex flex-row flex-nowrap gap-3"
@@ -187,28 +178,30 @@ const NewEpisodeForm = ():JSX.Element => {
               {index > 0 ? (
                 <button
                   type="button"
-                  onClick={() => swap(index, index - 1)}
+                  onClick={() => questions.swap(index, index - 1)}
                 >
                   <ChevronUpIcon className="w-7 h-7 p-1 stroke-current text-gray-500 transition hover:text-purple-500" />
                 </button>
               ) : <div className="h-7" />}
               <button
                 type="button"
-                onClick={() => remove(index)}
+                onClick={() => questions.remove(index)}
               >
                 <TrashIcon className="w-7 h-7 p-1 stroke-current text-gray-500 transition hover:text-red-500" />
               </button>
-              {index < fields.length - 1 ? (
+              {index < questions.fields.length - 1 ? (
                 <button
                   type="button"
-                  onClick={() => swap(index, index + 1)}
+                  onClick={() => questions.swap(index, index + 1)}
                 >
                   <ChevronDownIcon className="w-7 h-7 p-1 stroke-current text-gray-500 transition hover:text-purple-500" />
                 </button>
               ) : <div className="h-7" />}
             </div>
+
             <div>
               <div className="flex flex-row flex-wrap gap-3">
+
                 <label>
                   <div>
                     Time (s)
@@ -222,6 +215,7 @@ const NewEpisodeForm = ():JSX.Element => {
                     className="input"
                   />
                 </label>
+
                 <label>
                   <div>
                     Prompt
@@ -234,18 +228,26 @@ const NewEpisodeForm = ():JSX.Element => {
                     className="input"
                   />
                 </label>
+
               </div>
+
               <div className="pt-3">
                 Options
               </div>
-              <NewEpisodeOptions {...{ index, control, register }} />
+              <OptionsInputs {...{ index, control, register }} />
+
+              <div className="pt-3">
+                Host Responses
+              </div>
+              <HostResponsesInputs {...{ index, control, register }} />
+
             </div>
           </li>
         ))}
         <div className="py-3">
           <button
             type="button"
-            onClick={() => append(defaultValues.questions[0])}
+            onClick={() => questions.append(defaultValues.questions[0])}
           >
             <PlusIcon className="menu-icon" />
           </button>
@@ -258,43 +260,9 @@ const NewEpisodeForm = ():JSX.Element => {
       >
         Submit
       </button>
+
     </form>
   )
 }
 
-const NewEpisodeOptions = ({ index, control, register }):JSX.Element => {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: `questions.${index}.options`
-  });
-
-  return (
-    <div className="flex flex-row flex-wrap gap-3">
-      {fields.map((item, optionIndex) => (
-        <div key={item.id} className="relative">
-          <input
-            {...register(`questions.${index}.options.${optionIndex}.text`, {
-              required: true,
-            })}
-            type="text"
-            className="input pr-8"
-          />
-          <button
-            type="button"
-            onClick={() => remove(optionIndex)}
-            className="block absolute right-1 inset-y-0 my-auto"
-          >
-            <TrashIcon className="w-7 h-7 p-1 stroke-current text-gray-400 transition hover:text-red-500" />
-          </button>
-        </div>
-      ))}
-      <button
-        type="button"
-        onClick={() => append(defaultValues.questions[0].options[0])}
-      >
-        <PlusIcon className="menu-icon" />
-      </button>
-    </div>
-  )
-}
-
+export default NewEpisodeForm

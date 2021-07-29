@@ -15,6 +15,12 @@ export interface questionType {
       [key: string]: number; // count
     };
   };
+  hostResponses?: {
+    host: string;
+    response: RESPONSE;
+    time: number; // seconds
+    final: boolean;
+  }[]
 }
 
 export interface episodeType {
@@ -24,6 +30,7 @@ export interface episodeType {
   date: Date;
   thumbHigh?: string;
   questions: string[]; // question Ids
+  hosts?: string[];
 }
 
 
