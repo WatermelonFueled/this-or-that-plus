@@ -1,28 +1,33 @@
 import { PlusIcon, TrashIcon } from "@heroicons/react/outline";
-import { useFieldArray } from "react-hook-form";
 import HOSTS from '../../../hosts.json';
+const roster = Object.values(HOSTS)
 
-const HostsInputs = ({ control, register }) => {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "hosts"
-  });
-
-  const roster = Object.values(HOSTS)
+const HostsInputs = ({ register, controlledHostsFields, remove, append }) => {
 
   return (
     <div className="flex flex-row gap-3">
-      {fields.map((item, index) => (
+      {controlledHostsFields.map((item, index) => (
         <div key={item.id} className="relative">
           <select
-            {...register(`hosts.${index}`, { required: true })}
+            {...register(`hosts.${index}.name`, { required: true })}
             className="input pl-8"
           >
-            {roster.map((host) => (
-              <option key={host.name} value={host.name}>
-                {host.name}
+            {!controlledHostsFields.some(
+              ({ name }, i) => name === 'kobe' && index !== i
+            ) && (
+              <option value="kobe">Kobe</option>
+            )}
+            {!controlledHostsFields.some(
+              ({ name }, i) => name === 'dash' && index !== i
+            ) && (
+              <option value="dash">Dash</option>
+            )}
+            {/* below doesn't allow for default values to set in properly */}
+            {/* {roster.map(({ name }) => (
+              <option key={name} value={name}>
+                {name}
               </option>
-            ))}
+            ))} */}
           </select>
           <button
             type="button"
@@ -33,10 +38,10 @@ const HostsInputs = ({ control, register }) => {
           </button>
         </div>
       ))}
-      {fields.length < roster.length && (
+      {controlledHostsFields.length < roster.length && (
         <button
           type="button"
-          onClick={() => append(roster[fields.length].name)}
+          onClick={() => append({ name: roster[controlledHostsFields.length].name })}
         >
           <PlusIcon className="menu-icon" />
         </button>
@@ -46,3 +51,8 @@ const HostsInputs = ({ control, register }) => {
 }
 
 export default HostsInputs
+
+export const defaultValues = [{ name: 'kobe' }, { name: 'dash' }]
+
+
+

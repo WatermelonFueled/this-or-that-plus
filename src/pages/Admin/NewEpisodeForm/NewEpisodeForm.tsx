@@ -9,7 +9,7 @@ import CONFIG from '../../../config.json';
 import { RESPONSE } from "../../../schema";
 import { getYoutubeData } from "../../../api";
 import { extractTitle } from "../../../util";
-import HostsInputs from "./HostsInput";
+import HostsInputs, { defaultValues as hostsDefault } from "./HostsInput";
 import OptionsInputs, { defaultValues as optionsDefault } from "./OptionsInputs";
 import HostResponsesInputs, { defaultValues as hostResponsesDefault } from "./HostResponsesInputs";
 
@@ -19,7 +19,7 @@ type Inputs = {
   title: string;
   date: Date;
   thumbHigh?: string;
-  hosts: string[];
+  hosts: { name: string; }[];
   questions: {
     time: number;
     prompt: string;
@@ -28,7 +28,7 @@ type Inputs = {
     }[];
     hostResponses: {
       host: string;
-      response: RESPONSE;
+      option: RESPONSE;
       time: number;
       final: boolean;
     }[]
@@ -38,7 +38,7 @@ type Inputs = {
 const defaultValues = {
   url: '',
   title: '',
-  hosts: ['kobe', 'dash'],
+  hosts: hostsDefault,
   questions: [{
     time: 0,
     prompt: '',
@@ -57,6 +57,18 @@ const NewEpisodeForm = (): JSX.Element => {
     name: "questions"
   });
 
+  const hosts = useFieldArray({
+    control,
+    name: "hosts"
+  });
+  const watchHosts = watch('hosts')
+  const controlledHostsFields = hosts.fields.map((field, index) => ({
+    ...field,
+    ...watchHosts[index]
+  }))
+
+
+  // fetch youtube video data when link is inputted ---------------------
   const watchUrl = watch('url', '')
 
   useEffect(() => {
@@ -98,13 +110,14 @@ const NewEpisodeForm = (): JSX.Element => {
       }
     }
   }, [youtubeData.isSuccess, youtubeData.data, setValue])
+  // ------------------------------------------------------------------------
+
 
   const firestore = useFirestore()
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     delete data.url
-
-    const { questions, ...episodeData } = data
+    const { questions, hosts, ...episodeData } = data
 
     const batch = firestore.batch()
 
@@ -125,15 +138,31 @@ const NewEpisodeForm = (): JSX.Element => {
           {}
         ));
       }
+      // store host responses
+      questionData.hostResponses.filter(({ final }) => final).forEach(({ host, option }) => {
+        const responseRef = firestore.collection('responses').doc()
+        batch.set(responseRef, {
+          episodeId: episodeRef.id,
+          questionId: questionRef.id,
+          uid: host,
+          option,
+          date: episodeData.date,
+        })
+      })
       return questionRef.id
     })
 
-    batch.set(episodeRef, { questions: questionIds, ...episodeData })
+    batch.set(episodeRef, {
+      questions: questionIds,
+      hosts: hosts.map(({ name }) => name),
+      ...episodeData
+    })
 
     batch.commit().then((result) => {
       reset()
     })
   }
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -163,7 +192,7 @@ const NewEpisodeForm = (): JSX.Element => {
       <div>
         Hosts
       </div>
-      <HostsInputs {...{ control, register }} />
+      <HostsInputs {...{ register, controlledHostsFields }} {...hosts} />
 
       <ol className="divide-y divide-purple-700">
         <div className="pt-3">
@@ -211,7 +240,7 @@ const NewEpisodeForm = (): JSX.Element => {
                       required: true,
                       valueAsNumber: true,
                     })}
-                    type="text"
+                    type="number"
                     className="input"
                   />
                 </label>
@@ -239,7 +268,7 @@ const NewEpisodeForm = (): JSX.Element => {
               <div className="pt-3">
                 Host Responses
               </div>
-              <HostResponsesInputs {...{ index, control, register }} />
+              <HostResponsesInputs {...{ index, control, register }} hosts={controlledHostsFields} />
 
             </div>
           </li>

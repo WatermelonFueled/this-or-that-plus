@@ -1,10 +1,12 @@
 {
   "kobe": {
-    "name": "Kobe",
+    "name": "kobe",
+    "display": "Kobe",
     "img": "/media/hosts/kobe_twitter_27072021.jpg"
   },
   "dash": {
-    "name": "Dash",
+    "name": "dash",
+    "display": "Dash",
     "img": "/media/hosts/dash_twitter_27072021.jpg"
   }
 }
