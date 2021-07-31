@@ -3,6 +3,13 @@ export interface optionType {
 
 }
 
+export interface hostResponseType {
+  host: string;
+  option: RESPONSE;
+  time: number; // seconds
+  final: boolean;
+}
+
 export interface questionType {
   id: string;
   episodeId: string;
@@ -15,12 +22,7 @@ export interface questionType {
       [key: string]: number; // count
     };
   };
-  hostResponses?: {
-    host: string;
-    response: RESPONSE;
-    time: number; // seconds
-    final: boolean;
-  }[]
+  hostResponses?: hostResponseType[]
 }
 
 export interface episodeType {

@@ -34,9 +34,7 @@ const ResponseButton = (
       <div
         className="relative text-lg md:text-2xl"
       >
-        <p>
-          {children}
-        </p>
+        {children}
         {showCount && countTotal && (
           <p className="font-bold">
             {rawCountPercent.toFixed(1)}%
