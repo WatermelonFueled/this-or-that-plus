@@ -4,6 +4,7 @@ import ResponseButton from "../../components/ResponseButton";
 import { hostResponseType, questionType, responseType } from "../../schema";
 import CONFIG from '../../config.json'
 import HOSTS from '../../hosts.json'
+import { AnimatePresence, motion } from "framer-motion";
 
 const ResponseGrid = (
   {
@@ -17,15 +18,16 @@ const ResponseGrid = (
   }
 ): JSX.Element => {
   const { data: user } = useUser()
+
   const serverIncrement = useFirestore.FieldValue.increment;
   const firestore = useFirestore()
+
   const responsesRef = firestore.collection('responses')
   const { data: responsesUnknown } = useFirestoreCollectionData(
     responsesRef.where('episodeId', '==', episodeId).where('uid', '==', user.uid),
     { initialData: [], idField: 'id' }
   )
   const responses = responsesUnknown as unknown as responseType[]
-
   const currentResponse = responses.find(({ questionId }) => questionId === question?.id)
 
   const questionsRef = firestore.collection('questions')
@@ -63,7 +65,7 @@ const ResponseGrid = (
               const shardId = Math.floor(Math.random() * CONFIG.firestoreQuestionsNumShards).toString();
               const shardRef = questionsRef.doc(question.id).collection('shards').doc(shardId)
 
-              if (currentResponse) {
+              if (currentResponse) { // update existing response
                 batch.update(responsesRef.doc(currentResponse.id), {
                   option,
                   date: new Date()
@@ -72,7 +74,7 @@ const ResponseGrid = (
                   [option.toString()]: serverIncrement(1),
                   [currentResponse.option.toString()]: serverIncrement(-1),
                 })
-              } else {
+              } else { // new response by user
                 batch.set(responsesRef.doc(), {
                   episodeId,
                   questionId: question.id,
@@ -99,11 +101,21 @@ const ResponseGrid = (
             }}
           >
             <div className="absolute -top-3 left-3 flex flex-row gap-3">
-              {hostResponses.filter(
-                hostResponse => hostResponse.option === option
-              ).map(hostResponse => (
-                <HostIcon host={hostResponse.host} />
-              ))}
+              <AnimatePresence>
+                {hostResponses.filter(
+                  hostResponse => hostResponse.option === option
+                ).map(hostResponse => (
+                  <motion.img
+                    key={hostResponse.host}
+                    src={HOSTS?.[hostResponse.host]?.img}
+                    alt={hostResponse.host}
+                    className="rounded-full w-12 h-12"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  />
+                ))}
+              </AnimatePresence>
             </div>
             <p>
               {text}
@@ -116,12 +128,3 @@ const ResponseGrid = (
 }
 
 export default ResponseGrid
-
-
-const HostIcon = ({ host }) => (
-  <img
-    src={HOSTS?.[host]?.img}
-    className="rounded-full w-12 h-12"
-    alt={host}
-  />
-)
