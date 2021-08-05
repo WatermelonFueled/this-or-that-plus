@@ -52,7 +52,7 @@ const Episode = (): JSX.Element => {
                 setCurrentHostResponses(
                   episode.hosts.reduce((acc, hostName) => {
                     const last = findLast(
-                      questions[episode.questions[qIndex]].hostResponses ?? [],
+                      questions[episode.questions[qIndex]]?.hostResponses ?? [],
                       ({ time, host }) => current > time && host === hostName,
                     )
                     return last !== undefined ? [...acc, last] : acc

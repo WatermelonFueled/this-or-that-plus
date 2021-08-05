@@ -100,7 +100,7 @@ const ResponseGrid = (
               })
             }}
           >
-            <div className="absolute -top-3 left-3 flex flex-row gap-3">
+            <div className="absolute -top-2 left-3 flex flex-row gap-3">
               <AnimatePresence>
                 {hostResponses.filter(
                   hostResponse => hostResponse.option === option
@@ -117,7 +117,7 @@ const ResponseGrid = (
                 ))}
               </AnimatePresence>
             </div>
-            <p>
+            <p className="relative">
               {text}
             </p>
           </ResponseButton>

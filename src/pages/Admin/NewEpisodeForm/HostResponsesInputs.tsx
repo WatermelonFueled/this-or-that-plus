@@ -53,7 +53,7 @@ const HostResponsesInputs = (
           </label>
           <button
             type="button"
-            onClick={() => remove(index)}
+            onClick={() => remove(responseIndex)}
           >
             <TrashIcon className="w-7 h-7 p-1 stroke-current text-gray-500 transition hover:text-red-500" />
           </button>

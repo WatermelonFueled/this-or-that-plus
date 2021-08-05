@@ -8,5 +8,10 @@
     "name": "dash",
     "display": "Dash",
     "img": "/media/hosts/dash_twitter_27072021.jpg"
+  },
+  "raz": {
+    "name": "raz",
+    "display": "Raz",
+    "img": "/media/hosts/raz_twitter_05082021.jpg"
   }
 }
