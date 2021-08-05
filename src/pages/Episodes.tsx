@@ -14,8 +14,8 @@ const Episodes = ():JSX.Element => {
       </h1>
       <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {episodes && episodes.map((ep) => (
-          <li className="">
-            <EpisodeLink key={ep.id} episode={ep}>
+          <li className="" key={ep.id}>
+            <EpisodeLink episode={ep}>
               <div
                 className="p-3 text-lg font-bold transition group-hover:text-purple-900 dark:group-hover:text-purple-100"
               >

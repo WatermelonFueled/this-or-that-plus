@@ -23,7 +23,7 @@ const ResponseButton = (
       type="button"
       onClick={onClick}
       disabled={checked}
-      className={`relative block overflow-hidden h-32 outline-none rounded-xl p-4 transition bg-purple-500 bg-opacity-20 hover:bg-opacity-30 focus:bg-opacity-30 whitespace-pre-wrap ${checked ? 'ring-4 ring-opacity-70 ring-purple-900 dark:ring-purple-300' : ''}`}
+      className={`relative block h-32 outline-none rounded-xl p-4 transition bg-purple-500 bg-opacity-20 hover:bg-opacity-30 focus:bg-opacity-30 whitespace-pre-wrap ${checked ? 'ring-4 ring-opacity-70 ring-purple-900 dark:ring-purple-300' : ''}`}
     >
       <div
         className="absolute inset-0 w-full h-full bg-purple-500 transition-transform duration-500 ease-out transform origin-left"
@@ -32,13 +32,11 @@ const ResponseButton = (
         }}
       />
       <div
-        className="relative text-lg md:text-2xl"
+        className="text-lg md:text-2xl"
       >
-        <p>
-          {children}
-        </p>
+        {children}
         {showCount && countTotal && (
-          <p className="font-bold">
+          <p className="relative font-bold">
             {rawCountPercent.toFixed(1)}%
           </p>
         )}

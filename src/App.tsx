@@ -8,11 +8,11 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 
 import Admin from './pages/Admin'
 import Episode from './pages/Episode'
-
 import Episodes from './pages/Episodes'
+import Privacy from './pages/Privacy'
+
 import Menu from './Menu/Menu'
 import Background from './components/Background'
-import Privacy from './pages/Privacy'
 import { ScrollToTopOnNavigate } from './util'
 
 const queryClient = new QueryClient()
