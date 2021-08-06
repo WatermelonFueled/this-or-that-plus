@@ -55,6 +55,7 @@ const ResponseGrid = (
         ({ text }, option) => (
           <ResponseButton
             key={text}
+            text={text}
             checked={option === currentResponse?.option}
             count={counts[option]}
             countTotal={counts.total}
@@ -117,9 +118,6 @@ const ResponseGrid = (
                 ))}
               </AnimatePresence>
             </div>
-            <p className="relative">
-              {text}
-            </p>
           </ResponseButton>
         )
       )}
