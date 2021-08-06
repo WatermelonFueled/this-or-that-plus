@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Link, Redirect, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import 'firebase/firestore'
 import 'firebase/auth'
 import { FirebaseAppProvider } from 'reactfire'
@@ -14,6 +14,7 @@ import Privacy from './pages/Privacy'
 import Menu from './Menu/Menu'
 import Background from './components/Background'
 import { ScrollToTopOnNavigate } from './util'
+import Footer from './Menu/Footer'
 
 const queryClient = new QueryClient()
 
@@ -66,48 +67,7 @@ const App = (): JSX.Element => {
               setShowMenu={setShowMenu}
             />
           </div>
-          <footer
-            className="relative h-72 flex flex-row justify-between items-center px-6 sm:px-18 md:px-24 lg:px-36 gap-6 bg-gray-700 text-white"
-          >
-            <ul className="flex flex-col gap-4">
-              <li>
-                <Link to="/privacy" className="hover:text-gray-300">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <p className="text-gray-300">
-                  &copy; David Park
-                </p>
-              </li>
-            </ul>
-            <div className="flex flex-row gap-4">
-              <a
-                href="https://twitter.com/WatermelonFuel"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:animate-pulse"
-              >
-                <img
-                  src="/media/social/twitter-white.svg"
-                  alt="🐤"
-                  className="w-8 h-8"
-                />
-              </a>
-              <a
-                href="https://github.com/WatermelonFueled"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:animate-pulse"
-              >
-                <img
-                  src="/media/social/GitHub-Mark-Light-64px.png"
-                  alt="🐙"
-                  className="w-8 h-8"
-                />
-              </a>
-            </div>
-          </footer>
+          <Footer />
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
