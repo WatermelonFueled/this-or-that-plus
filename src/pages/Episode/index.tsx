@@ -70,7 +70,7 @@ const Episode = (): JSX.Element => {
       </div>
       <div className="py-4 relative flex flex-col gap-4 flex-grow 2xl:w-1/4">
         {status === 'loading' && <Loading className="absolute m-auto inset-0" />}
-        {currentQuestion?.prompt ? (
+        {currentQuestion?.prompt && !stopped ? (
           <p
             className="mx-4 pl-2 text-xl text-gray-700 dark:text-gray-300 transition opacity-100 border-l-8 border-purple-500"
           >
