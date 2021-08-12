@@ -13,5 +13,15 @@
     "name": "raz",
     "display": "Raz",
     "img": "/media/hosts/raz_twitter_05082021.jpg"
+  },
+  "damonte": {
+    "name": "damonte",
+    "display": "Damonte",
+    "img": "/media/hosts/damonte_twitter_12082021.jpg"
+  },
+  "hai": {
+    "name": "hai",
+    "display": "Hai",
+    "img": "/media/hosts/hai_twitter_12082021.jpg"
   }
 }

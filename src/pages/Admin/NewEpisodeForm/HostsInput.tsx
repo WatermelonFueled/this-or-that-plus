@@ -27,6 +27,16 @@ const HostsInputs = ({ register, controlledHostsFields, remove, append }) => {
             ) && (
               <option value="raz">Raz</option>
             )}
+            {!controlledHostsFields.some(
+              ({ name }, i) => name === 'damonte' && index !== i
+            ) && (
+              <option value="damonte">Damonte</option>
+            )}
+            {!controlledHostsFields.some(
+              ({ name }, i) => name === 'hai' && index !== i
+            ) && (
+              <option value="hai">Hai</option>
+            )}
             {/* below doesn't allow for default values to set in properly */}
             {/* {roster.map(({ name }) => (
               <option key={name} value={name}>
