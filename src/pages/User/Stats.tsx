@@ -27,6 +27,7 @@ const Stats = () => {
       { value: 0, title: 'THAT', color: '#8a5cf6' },
       { value: 0, title: 'OTHER', color: '#6d28d9' },
       { value: 0, title: 'OTHER OTHER', color: '#4c1d95' },
+      { value: 0, title: 'OTHER OTHER OTHER', color: '#be185d' },
     ],
     episodeList: new Set(),
   })

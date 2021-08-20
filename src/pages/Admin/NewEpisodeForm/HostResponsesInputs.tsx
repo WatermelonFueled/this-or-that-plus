@@ -33,6 +33,7 @@ const HostResponsesInputs = (
             <option value={RESPONSE.THAT}>THAT</option>
             <option value={RESPONSE.OTHER}>OTHER</option>
             <option value={RESPONSE.OTHEROTHER}>OTHER OTHER</option>
+            <option value={RESPONSE.OTHEROTHEROTHER}>OTHER OTHER OTHER</option>
           </select>
           <input
             {...register(
