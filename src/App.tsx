@@ -15,6 +15,7 @@ import Menu from './Menu/Menu'
 import Background from './components/Background'
 import { ScrollToTopOnNavigate } from './util'
 import Footer from './Menu/Footer'
+import User from './pages/User'
 
 const queryClient = new QueryClient()
 
@@ -45,6 +46,9 @@ const App = (): JSX.Element => {
               <Switch>
                 <Route path="/admin">
                   <Admin />
+                </Route>
+                <Route path="/user">
+                  <User />
                 </Route>
                 <Route path="/privacy">
                   <Privacy />

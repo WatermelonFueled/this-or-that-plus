@@ -31,6 +31,7 @@ module.exports = {
     extend: {
       animation: ['hover', 'focus', 'motion-safe'],
       ringWidth: ['hover', 'focus', 'group-focus'],
+      opacity: ['disabled'],
     },
   },
   plugins: [

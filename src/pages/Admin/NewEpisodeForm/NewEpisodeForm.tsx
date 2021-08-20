@@ -12,6 +12,7 @@ import { extractTitle } from "../../../util";
 import HostsInputs, { defaultValues as hostsDefault } from "./HostsInput";
 import OptionsInputs, { defaultValues as optionsDefault } from "./OptionsInputs";
 import HostResponsesInputs, { defaultValues as hostResponsesDefault } from "./HostResponsesInputs";
+import { Prompt } from "react-router-dom";
 
 type Inputs = {
   url?: string;
@@ -290,6 +291,10 @@ const NewEpisodeForm = (): JSX.Element => {
         Submit
       </button>
 
+      <Prompt
+        when={true}
+        message="confirm navigation"
+      />
     </form>
   )
 }

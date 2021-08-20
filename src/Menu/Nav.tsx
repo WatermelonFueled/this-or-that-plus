@@ -22,6 +22,13 @@ const Nav = (): JSX.Element | null => {
       >
         Episodes
       </NavLink>
+      <NavLink
+        to="/user"
+        className="navlink"
+        activeClassName="tracking-widest font-bold"
+      >
+        User
+      </NavLink>
       {isAdmin(signInCheckResult.user?.uid) && (
         <NavLink
           to="/admin"
