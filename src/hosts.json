@@ -23,5 +23,15 @@
     "name": "hai",
     "display": "Hai",
     "img": "/media/hosts/hai_twitter_12082021.jpg"
+  },
+  "ablazeolive": {
+    "name": "ablazeolive",
+    "display": "Ablazeolive",
+    "img": "/media/hosts/ablazeolive_twitter_19082021.jpg"
+  },
+  "chime": {
+    "name": "chime",
+    "display": "Chime",
+    "img": "/media/hosts/chime_twitter_19082021.jpg"
   }
 }
