@@ -21,7 +21,7 @@ const queryClient = new QueryClient()
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBrsa7k3ajtgKbUqS34kWf0y69ZEXSy0-Q',
-  authDomain: 'thisorthat-lol.firebaseapp.com',
+  authDomain: 'auth.thisorthatplus.com',
   databaseURL: 'https://thisorthat-lol.firebaseio.com',
   projectId: 'thisorthat-lol',
   storageBucket: 'thisorthat-lol.appspot.com',

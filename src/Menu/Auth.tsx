@@ -9,7 +9,7 @@ export const Login = ():JSX.Element => {
     signInFlow: 'popup',
     signInOptions: [
       auth.GoogleAuthProvider.PROVIDER_ID,
-      // auth.FacebookAuthProvider.PROVIDER_ID,
+      auth.FacebookAuthProvider.PROVIDER_ID,
       auth.TwitterAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
